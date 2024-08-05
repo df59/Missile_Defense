@@ -7,6 +7,7 @@ import TurretScene from './scenes/TurretUpgradeScene';
 import PointModeScene from './scenes/PointModeScene';
 import MainMenuScene from './scenes/MainMenuScene';
 import TutorialScene from './scenes/TutorialScene';
+import GameOverScene from './scenes/GameOverScene';
 
 const sizes={
   width:1920,
@@ -31,7 +32,10 @@ const config = {
   type:Phaser.WEBGL,
   width:sizes.width,
   height:sizes.height,
-  canvas:gameCanvas,
+  parent:"game",
+  dom: {
+    createContainer: true
+  },
   physics:{
     default:"arcade",
     arcade:{
@@ -46,7 +50,8 @@ const config = {
     TurretScene,
     PointModeScene,
     MainMenuScene,
-    TutorialScene
+    TutorialScene,
+    GameOverScene
   ]
 }
 

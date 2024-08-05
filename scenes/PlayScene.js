@@ -9,10 +9,6 @@ import HealthPackage from '../entities/HealthPackage'
 import Turret from '../entities/Turret'
 import Tank from '../entities/Tank'
 
-const initialTankSpeed = 250;
-const initialSpeedDown = 300;
-const maxTargets = 10;
-
 export default class PlayScene extends Phaser.Scene {
 
   constructor(){
@@ -21,13 +17,29 @@ export default class PlayScene extends Phaser.Scene {
     this.cursor;
     this.missile1Group;
     this.missile2Group;
+    this.carePackageGroup;
+    this.healthPackageGroup;
+    this.bulletGroup;
+    this.tankGroup;
+    this.turretGroup;
+
+    this.score;
+    this.playerHealth;
+    this.funds;
+
+    this.spawns = {};
+
+    this.sizes = {};
+  }
+
+  create() {
 
     this.score = 0;
-    this.playerHealth = 100;
+    this.playerHealth = 1;
     this.funds = 100000;
 
     this.spawns = {
-      'missile1': { spawnInterval: 2000, nextSpawnTimer: 2000, spawnRate: 1, decayRate: .995 },
+      'missile1': { spawnInterval: 2000, nextSpawnTimer: 2000, spawnRate: 1, decayRate: .9 },
       'missile2': { spawnInterval: 2000, nextSpawnTimer: 30000, spawnRate: 1, decayRate: .995 },
       'carePackage': { spawnInterval: 20000, nextSpawnTimer: 20000, spawnRate: 1, decayRate: .992 },
       'healthPackage': { spawnInterval: 5000, nextSpawnTimer: 30000, spawnRate: 1, decayRate: .992 },
@@ -37,15 +49,10 @@ export default class PlayScene extends Phaser.Scene {
         width:1920,
         height:960,
       }
-  }
-
-  preload() {
-  }
-
-  create() {
     
     this.add.image(0,0,"bg").setOrigin(0,0);
 
+    // Add entity groups to scene
     this.missile1Group = this.physics.add.group({
         classType: Missile1,
         maxSize: 100,
@@ -92,10 +99,6 @@ export default class PlayScene extends Phaser.Scene {
     this.tank.body.setCollideWorldBounds(true);
 
 
-
-    this.cursor = this.input.keyboard.addKeys("W,A,S,D, SPACE");
-
-
     // Create collisions
     this.physics.add.overlap(this.missile1Group, this.bulletGroup, this.bulletMissileCollision, null, this);
     this.physics.add.overlap(this.missile2Group, this.bulletGroup, this.bulletMissileCollision, null, this);
@@ -117,6 +120,10 @@ export default class PlayScene extends Phaser.Scene {
     .bitmapText(this.sizes.width - 600, 20, 'arcade', 'Funds: 0', 24)
     .setOrigin(0.5);
 
+    // Add input keys
+    this.input.keyboard.manager.enabled = true;  // For game restarts from game over scene
+    this.cursor = this.input.keyboard.addKeys("A,D, SPACE");
+
     // Key to trigger the upgrade scene
     this.input.keyboard.on('keydown-SPACE', () => {
         this.scene.pause();
@@ -135,6 +142,12 @@ export default class PlayScene extends Phaser.Scene {
     this.scoreText.setText('Score: ' + this.score)
     this.healthText.setText('Health: ' + this.playerHealth)
     this.fundsText.setText('Funds: ' + this.funds)
+
+    if(this.playerHealth < 1) {
+      this.input.keyboard.manager.enabled = false;
+      this.scene.pause()
+      this.scene.launch('game-over-scene', { score: this.score }); // pass reference to this scene
+    }
 
   }
 
@@ -176,7 +189,6 @@ export default class PlayScene extends Phaser.Scene {
   }
 
   checkMissileSpawnTimer(time, delta, missileType) {
-    // Decrease the missile spawn timer
     this.spawns[missileType].nextSpawnTimer -= delta;
     if (this.spawns[missileType].nextSpawnTimer <= 0) {
         this.spawnMissiles(missileType);

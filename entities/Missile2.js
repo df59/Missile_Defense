@@ -1,15 +1,15 @@
 import Phaser from "phaser";
 
-export default class Missile1 extends Phaser.Physics.Arcade.Image {
+export default class Missile2 extends Phaser.Physics.Arcade.Image {
 
     constructor(scene, x, y) {
         super(scene, x, y)
         this.playScene = scene;
-        this.setTexture('missile1')
-        this.speed = 200
-        this.health = 1
-        this.score = 1
-        this.damage = 10
+        this.setTexture('missile2')
+        this.speed = 100
+        this.health = 5
+        this.score = 5
+        this.damage = 20
     }
 
 

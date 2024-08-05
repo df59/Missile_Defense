@@ -13,10 +13,10 @@ export default class Tank extends Phaser.GameObjects.Container {
         this.bulletDamage = 1;
         this.turretGunLength = 60;
         this.upgrades = {
-            'fire-rate': { cost: 100, description: 'Increase bullet fire rate.', tier: 0 },
+            'fire-rate': { cost: 200, description: 'Increase bullet fire rate.', tier: 0 },
             'bullet-speed': { cost: 150, description: 'Increase bullet speed.', tier: 0 },
-            'tank-speed': { cost: 200, description: 'Increase tank movement speed.', tier: 0 },
-            'buy-turret': { cost: 500, description: 'Buy a turret that auto fires.', tier: 0 },
+            'tank-speed': { cost: 100, description: 'Increase tank movement speed.', tier: 0 },
+            'buy-turret': { cost: 1000, description: 'Buy a turret that auto fires.', tier: 0 },
             'bullet-damage': { cost: 500, description: 'Increase bullet damage output.', tier: 0 },    
           };
 

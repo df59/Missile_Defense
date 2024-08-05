@@ -24,8 +24,8 @@ export default class TurretUpgradeScene extends Phaser.Scene {
 
     // Create buttons
     const button1 = this.createButton(this.cameras.main.width / 2, this.cameras.main.height / 2 + 250, 'Close', null, () => {
-        this.scene.stop();
-        this.scene.resume('play-scene');
+      this.scene.stop();
+      this.scene.switch('upgrade-scene');
       });
     const button2 = this.createButton(this.cameras.main.width / 2 - 180, this.cameras.main.height / 2 - 130, 'Fire Rate', 'fire-rate', null);
     const button3 = this.createButton(this.cameras.main.width / 2 - 180, this.cameras.main.height / 2 - 60, 'Bullet Speed', 'bullet-speed', null);
@@ -47,6 +47,12 @@ export default class TurretUpgradeScene extends Phaser.Scene {
 
     // Funds textbox
     this.fundsText = this.add.text(this.cameras.main.width / 2 - 200, this.cameras.main.height / 2 + 250, `Funds: ${this.playScene.funds}`, { fontSize: '24px', fill: '#fff' }).setOrigin(0.5);
+
+    // Key to trigger the upgrade scene
+    this.input.keyboard.on('keydown-SPACE', () => {
+      this.scene.stop();
+      this.scene.switch('upgrade-scene');
+    });
   }
 
   createButton(x, y, text, upgradeKey, callback) {

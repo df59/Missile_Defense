@@ -10,7 +10,7 @@ export default class Turret extends Phaser.GameObjects.Container {
         this.bulletDamage = 1;
         this.turretGunLength = 60;
         this.upgrades = {
-            'fire-rate': { cost: 100, description: 'Increase bullet fire rate.', tier: 0 },
+            'fire-rate': { cost: 200, description: 'Increase bullet fire rate.', tier: 0 },
             'bullet-speed': { cost: 150, description: 'Increase bullet speed.', tier: 0 },
             'bullet-damage': { cost: 500, description: 'Increase bullet damage output.', tier: 0 },
           };

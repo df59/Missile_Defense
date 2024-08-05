@@ -1,6 +1,7 @@
 import '../style.css'
 import Phaser from 'phaser'
 import Missile1 from '../entities/Missile1'
+import Missile2 from '../entities/Missile2'
 import Bullet from '../entities/Bullet'
 import UpgradeScene from './UpgradeScene'
 import CarePackage from '../entities/CarePackage'
@@ -19,16 +20,18 @@ export default class PlayScene extends Phaser.Scene {
     this.tank;
     this.cursor;
     this.missile1Group;
-    this.spawnInterval = 1000;
-    this.spawnRate = 1;
-    this.nextSpawnTimer = 2000;
+    this.missile2Group;
+
     this.score = 0;
     this.playerHealth = 100;
-    this.funds = 10000;
-    this.nextCarePackageTimer = 2000;
-    this.carePackageSpawnInterval = 10000;
-    this.nextHealthPackageTimer = 2000;
-    this.healthPackageSpawnInterval = 10000;
+    this.funds = 100000;
+
+    this.spawns = {
+      'missile1': { spawnInterval: 2000, nextSpawnTimer: 2000, spawnRate: 1, decayRate: .995 },
+      'missile2': { spawnInterval: 2000, nextSpawnTimer: 30000, spawnRate: 1, decayRate: .995 },
+      'carePackage': { spawnInterval: 20000, nextSpawnTimer: 20000, spawnRate: 1, decayRate: .992 },
+      'healthPackage': { spawnInterval: 5000, nextSpawnTimer: 30000, spawnRate: 1, decayRate: .992 },
+    };
 
     this.sizes={
         width:1920,
@@ -48,6 +51,11 @@ export default class PlayScene extends Phaser.Scene {
         maxSize: 100,
         runChildUpdate: true
     })
+    this.missile2Group = this.physics.add.group({
+      classType: Missile2,
+      maxSize: 100,
+      runChildUpdate: true
+  })
 
     this.bulletGroup = this.physics.add.group({
         classType: Bullet,
@@ -89,7 +97,8 @@ export default class PlayScene extends Phaser.Scene {
 
 
     // Create collisions
-    this.physics.add.overlap(this.missile1Group, this.bulletGroup, this.bulletMissile1Collision, null, this);
+    this.physics.add.overlap(this.missile1Group, this.bulletGroup, this.bulletMissileCollision, null, this);
+    this.physics.add.overlap(this.missile2Group, this.bulletGroup, this.bulletMissileCollision, null, this);
     this.physics.add.overlap(this.carePackageGroup, this.bulletGroup, this.bulletCarePackageCollision, null, this);
     this.physics.add.overlap(this.healthPackageGroup, this.bulletGroup, this.bulletHealthPackageCollision, null, this);
     this.physics.add.overlap(this.carePackageGroup, this.tank, this.carePackageTankCollision, null, this);
@@ -118,9 +127,9 @@ export default class PlayScene extends Phaser.Scene {
 
   update(time, delta){
 
-    this.checkMissileSpawnTimer(time, delta)
-    this.checkCarePackageSpawnTimer(time, delta)
-    this.checkHealthPackageSpawnTimer(time, delta)
+    for (const missileType of Object.keys(this.spawns)) {
+      this.checkMissileSpawnTimer(time, delta, missileType);
+    }
 
     // Update text
     this.scoreText.setText('Score: ' + this.score)
@@ -154,89 +163,103 @@ export default class PlayScene extends Phaser.Scene {
     healthPackage.parachute.setActive(false)
     healthPackage.parachute.setVisible(false)
     healthPackage.parachute.destroy()
-    healthPackage.speed = 300
+    healthPackage.speed = 600
   }
 
   decrementPlayerHealth(amount) {
     this.playerHealth -= amount;
   }
 
-  bulletMissile1Collision(missile1, bullet) {
-    missile1.health -= bullet.damage;
+  bulletMissileCollision(missile, bullet) {
+    missile.health -= bullet.damage;
     bullet.destroy()
   }
 
-  checkMissileSpawnTimer(time, delta) {
+  checkMissileSpawnTimer(time, delta, missileType) {
     // Decrease the missile spawn timer
-    this.nextSpawnTimer -= delta;
-    if (this.nextSpawnTimer <= 0) {
-        this.spawnMissiles();
-        this.spawnInterval *= .999
-        this.nextSpawnTimer = this.spawnInterval;
+    this.spawns[missileType].nextSpawnTimer -= delta;
+    if (this.spawns[missileType].nextSpawnTimer <= 0) {
+        this.spawnMissiles(missileType);
+        this.spawns[missileType].spawnInterval *= this.spawns[missileType].decayRate;
+        this.spawns[missileType].nextSpawnTimer = this.spawns[missileType].spawnInterval;
     }
 
     }
 
-  checkCarePackageSpawnTimer(time, delta) {
-    this.nextCarePackageTimer -= delta;
-        if (this.nextCarePackageTimer <= 0) {
-            this.spawnCarePackage();
-            this.nextCarePackageTimer = this.carePackageSpawnInterval;
-        }  
+  spawnMissiles(missileType) {
+    switch(missileType) {
+      case 'missile1':
+        this.spawnMissile1()
+        break;
+      case 'missile2':
+        this.spawnMissile2()
+        break;
+      case 'carePackage':
+        this.spawnCarePackage()
+        break;
+      case 'healthPackage':
+        this.spawnHealthPackage()
+        break;
     }
-
-    spawnCarePackage() {
-        console.log("spawning care package");
-        const xPos = this.getRandomX();
-        const yPos = 0;
-        const carePackage = new CarePackage(this, xPos, yPos);
-
-        this.add.existing(carePackage);
-        this.physics.add.existing(carePackage);
-
-        carePackage.setActive(true);
-        carePackage.setVisible(true);
-        this.carePackageGroup.add(carePackage)
-        console.log("care package funds: " + carePackage.funds)
-    }
-
-
-    checkHealthPackageSpawnTimer(time, delta) {
-        this.nextHealthPackageTimer -= delta;
-            if (this.nextHealthPackageTimer <= 0) {
-                this.spawnHealthPackage();
-                this.nextHealthPackageTimer = this.healthPackageSpawnInterval;
-            }  
-    }
-
-    spawnHealthPackage() {
-        console.log("spawning health package");
-        const xPos = this.getRandomX();
-        const yPos = 0;
-        const healthPackage = new HealthPackage(this, xPos, yPos);
-
-        this.add.existing(healthPackage);
-        this.physics.add.existing(healthPackage);
-
-        healthPackage.setActive(true);
-        healthPackage.setVisible(true);
-        this.healthPackageGroup.add(healthPackage)
-    }
-
-  spawnMissiles() {
-
-    for (let i = 0; i < this.spawnRate; i++) {
-        const missile1 = new Missile1(this, 300, 300)
-  
-        const xPos = this.getRandomX()
-        const yPos = 0
-        missile1.setPosition(xPos, yPos)
-        missile1.setActive(true)
-        missile1.setVisible(true)
-  
-        this.missile1Group.add(missile1, true)
-      }
   }
+
+
+  spawnMissile1() {
+    for (let i = 0; i < this.spawns['missile1'].spawnRate; i++) {
+      const missile1 = new Missile1(this, 300, 300)
+
+      const xPos = this.getRandomX()
+      const yPos = 0
+      missile1.setPosition(xPos, yPos)
+      missile1.setActive(true)
+      missile1.setVisible(true)
+
+      this.missile1Group.add(missile1, true)
+    }
+  }
+
+  spawnMissile2() {
+    for (let i = 0; i < this.spawns['missile2'].spawnRate; i++) {
+      const missile2 = new Missile2(this, 300, 300)
+
+      const xPos = this.getRandomX()
+      const yPos = 0
+      missile2.setPosition(xPos, yPos)
+      missile2.setActive(true)
+      missile2.setVisible(true)
+
+      this.missile2Group.add(missile2, true)
+    }
+  }
+
+  spawnCarePackage() {
+    console.log("spawning care package");
+    const xPos = this.getRandomX();
+    const yPos = 0;
+    const carePackage = new CarePackage(this, xPos, yPos);
+
+    this.add.existing(carePackage);
+    this.physics.add.existing(carePackage);
+
+    carePackage.setActive(true);
+    carePackage.setVisible(true);
+    this.carePackageGroup.add(carePackage)
+    console.log("care package funds: " + carePackage.funds)
+}
+
+spawnHealthPackage() {
+    console.log("spawning health package");
+    const xPos = this.getRandomX();
+    const yPos = 0;
+    const healthPackage = new HealthPackage(this, xPos, yPos);
+
+    this.add.existing(healthPackage);
+    this.physics.add.existing(healthPackage);
+
+    healthPackage.setActive(true);
+    healthPackage.setVisible(true);
+    this.healthPackageGroup.add(healthPackage)
+}
 
   getRandomX() {
     return Math.floor(Math.random() * this.sizes.width)

@@ -39,6 +39,12 @@ export default class TankUpgradeScene extends Phaser.Scene {
 
     // Funds textbox
     this.fundsText = this.add.text(this.cameras.main.width / 2 - 200, this.cameras.main.height / 2 + 350, `Funds: ${this.playScene.funds}`, { fontSize: '24px', fill: '#fff' }).setOrigin(0.5);
+
+    // Key to trigger the upgrade scene
+    this.input.keyboard.on('keydown-SPACE', () => {
+        this.scene.stop();
+        this.scene.resume('play-scene');
+        });
   }
 
   createButton(x, y, text, upgradeKey, callback) {
@@ -137,6 +143,10 @@ export default class TankUpgradeScene extends Phaser.Scene {
             this.playScene.turretGroup.add(turret, true)
             this.playScene.funds -= this.tank.upgrades[option].cost;
             this.tank.upgrades[option].tier += 1;
+            this.scene.setVisible(false);
+            this.scene.stop()
+            this.scene.launch('turret-upgrade-scene', { playScene: this.playScene, turret: turret}); // pass reference to this scene
+
         } else {
             this.descriptionText.setText("Insufficient funds.")
         }

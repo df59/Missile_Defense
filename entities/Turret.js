@@ -7,6 +7,7 @@ export default class Turret extends Phaser.GameObjects.Container {
         this.fireInterval = 150;
         this.nextFireTimer = this.fireInterval;
         this.bulletSpeed = 500;
+        this.bulletDamage = 1;
         this.turretGunLength = 60;
         this.upgrades = {
             'fire-rate': { cost: 100, description: 'Increase bullet fire rate.', tier: 0 },
@@ -113,7 +114,7 @@ export default class Turret extends Phaser.GameObjects.Container {
             if (shoot) {
                 shoot.fire(this.x + this.turretGun.x+(this.turretGunLength*Math.cos(this.turretGun.rotation)),
                      this.y + this.turretGun.y+(this.turretGunLength*Math.sin(this.turretGun.rotation)),
-                      this.turretGun.rotation + (.28), this.bulletSpeed)
+                      this.turretGun.rotation + (.28), this.bulletSpeed, this.bulletDamage)
                 }
       }
 

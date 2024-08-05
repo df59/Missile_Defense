@@ -5,12 +5,14 @@ export default class Bullet extends Phaser.Physics.Arcade.Sprite {
     super(scene, x, y, 'bullet');
 
     this.speed = Phaser.Math.GetSpeed(800, 1)
+    this.damage = 1;
     this.setScale(.5)
 
   }
 
-  fire(x, y, direction, inputSpeed) {
+  fire(x, y, direction, inputSpeed, inputDamage) {
     this.speed = Phaser.Math.GetSpeed(inputSpeed, 1)
+    this.damage = inputDamage;
     this.setPosition(x, y)
     this.setActive(true)
     this.setVisible(true)

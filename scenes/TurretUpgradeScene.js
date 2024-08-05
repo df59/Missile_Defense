@@ -118,6 +118,16 @@ export default class TurretUpgradeScene extends Phaser.Scene {
             this.descriptionText.setText("Insufficient funds.")
         }
         break;
+        case 'bullet-damage':
+          console.log('Bullet Damage selected');
+          if(this.turret.upgrades[option] && this.playScene.funds >= this.turret.upgrades[option].cost) {
+              this.turret.bulletDamage += 1;
+              this.playScene.funds -= this.turret.upgrades[option].cost;
+              this.turret.upgrades[option].tier += 1;
+          } else {
+              this.descriptionText.setText("Insufficient funds.")
+          }
+          break;
     default:
         console.log('Unknown upgrade option');
         break;

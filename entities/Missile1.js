@@ -7,7 +7,8 @@ export default class Missile1 extends Phaser.Physics.Arcade.Image {
         this.playScene = scene;
         this.setTexture('missile1')
         this.speed = 200
-        this.health = 5
+        this.health = 1
+        this.score = 1
         this.damage = 10
     }
 
@@ -19,6 +20,12 @@ export default class Missile1 extends Phaser.Physics.Arcade.Image {
                 this.setActive(false)
                 this.destroy()
                 this.playScene.decrementPlayerHealth(10)
+            }
+
+            if(this.health < 1) {
+                this.setVisible(false)
+                this.setActive(false)
+                this.destroy() 
             }
     }
 

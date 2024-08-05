@@ -10,6 +10,7 @@ export default class Tank extends Phaser.GameObjects.Container {
         this.fireInterval = 150;
         this.nextFireTimer = this.fireInterval;
         this.bulletSpeed = 500;
+        this.bulletDamage = 1;
         this.turretGunLength = 60;
         this.upgrades = {
             'fire-rate': { cost: 100, description: 'Increase bullet fire rate.', tier: 0 },
@@ -62,7 +63,7 @@ export default class Tank extends Phaser.GameObjects.Container {
             if (shoot) {
                 shoot.fire(this.x+this.tankGun.x-(this.tankGunLength*Math.sin(this.tankGun.rotation)),
                      this.y + this.tankGun.y+(this.tankGunLength*Math.cos(this.tankGun.rotation)),
-                      this.tankGun.rotation + (1.855), this.bulletSpeed)
+                      this.tankGun.rotation + (1.855), this.bulletSpeed, this.bulletDamage)
                 }
             }
       }

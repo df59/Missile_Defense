@@ -20,9 +20,6 @@ export default class CarePackage extends Phaser.GameObjects.Container {
         // Setup physics for the container
         scene.physics.world.enable(this);
         this.body.setVelocityY(this.speed);
-        this.body.setImmovable(true);
-        this.body.setCollideWorldBounds(true);
-        this.body.allowGravity = false;
         this.body.setSize(this.carePackage.displayWidth, this.carePackage.displayHeight);
     }
 

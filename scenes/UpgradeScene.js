@@ -52,7 +52,7 @@ export default class TankUpgradeScene extends Phaser.Scene {
         tierText = this.add.text(x + 360, y, `${this.tank.upgrades[upgradeKey].tier}`, { fontSize: '24px', fill: '#fff' }).setOrigin(0.5);
     }
 
-    // Make the button interactive
+    // Make the button click call the callback variable
     if(this.tank.upgrades[upgradeKey]) {  // If not the close button
         button.on('pointerdown', () => {
                 this.upgrade(upgradeKey, costText, tierText);
@@ -104,6 +104,16 @@ export default class TankUpgradeScene extends Phaser.Scene {
         console.log('Bullet Speed selected');
         if(this.tank.upgrades[option] && this.playScene.funds >= this.tank.upgrades[option].cost) {
             this.tank.bulletSpeed += 100;
+            this.playScene.funds -= this.tank.upgrades[option].cost;
+            this.tank.upgrades[option].tier += 1;
+        } else {
+            this.descriptionText.setText("Insufficient funds.")
+        }
+        break;
+    case 'bullet-damage':
+        console.log('Bullet Damage selected');
+        if(this.tank.upgrades[option] && this.playScene.funds >= this.tank.upgrades[option].cost) {
+            this.tank.bulletDamage += 1;
             this.playScene.funds -= this.tank.upgrades[option].cost;
             this.tank.upgrades[option].tier += 1;
         } else {

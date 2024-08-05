@@ -89,7 +89,7 @@ export default class PlayScene extends Phaser.Scene {
 
 
     // Create collisions
-    this.physics.add.overlap(this.missile1Group, this.bulletGroup, this.collision, null, this);
+    this.physics.add.overlap(this.missile1Group, this.bulletGroup, this.bulletMissile1Collision, null, this);
     this.physics.add.overlap(this.carePackageGroup, this.bulletGroup, this.bulletCarePackageCollision, null, this);
     this.physics.add.overlap(this.healthPackageGroup, this.bulletGroup, this.bulletHealthPackageCollision, null, this);
     this.physics.add.overlap(this.carePackageGroup, this.tank, this.carePackageTankCollision, null, this);
@@ -161,10 +161,9 @@ export default class PlayScene extends Phaser.Scene {
     this.playerHealth -= amount;
   }
 
-  collision(missile1, bullet) {
+  bulletMissile1Collision(missile1, bullet) {
+    missile1.health -= bullet.damage;
     bullet.destroy()
-    missile1.destroy()
-    this.score += 10
   }
 
   checkMissileSpawnTimer(time, delta) {

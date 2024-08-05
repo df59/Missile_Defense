@@ -154,7 +154,7 @@ export default class PlayScene extends Phaser.Scene {
     carePackage.parachute.setActive(false)
     carePackage.parachute.setVisible(false)
     carePackage.parachute.destroy()
-    carePackage.speed = 300
+    carePackage.speed = 800
   }
 
 
@@ -163,7 +163,7 @@ export default class PlayScene extends Phaser.Scene {
     healthPackage.parachute.setActive(false)
     healthPackage.parachute.setVisible(false)
     healthPackage.parachute.destroy()
-    healthPackage.speed = 600
+    healthPackage.speed = 800
   }
 
   decrementPlayerHealth(amount) {

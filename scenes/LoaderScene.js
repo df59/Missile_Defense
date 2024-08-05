@@ -29,6 +29,6 @@ export default class LoaderScene extends Phaser.Scene {
   }
 
   create() {
-    this.scene.switch('play-scene')
+    this.scene.switch('main-menu-scene')
   }
 }

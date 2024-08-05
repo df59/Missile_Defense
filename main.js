@@ -5,6 +5,8 @@ import LoaderScene from './scenes/LoaderScene';
 import UpgradeScene from './scenes/UpgradeScene';
 import TurretScene from './scenes/TurretUpgradeScene';
 import PointModeScene from './scenes/PointModeScene';
+import MainMenuScene from './scenes/MainMenuScene';
+import TutorialScene from './scenes/TutorialScene';
 
 const sizes={
   width:1920,
@@ -42,7 +44,9 @@ const config = {
     PlayScene,
     UpgradeScene,
     TurretScene,
-    PointModeScene
+    PointModeScene,
+    MainMenuScene,
+    TutorialScene
   ]
 }
 

@@ -8,7 +8,7 @@ export default class LoaderScene extends Phaser.Scene {
   preload() {
     this.load.image('tank', './assets/tank(2).png')
     this.load.image('missile1', './assets/missile1(3).png')
-    this.load.image('tankgun', './assets/tankgun(2).png')
+    this.load.image('tankGun', './assets/tankgun(2).png')
     this.load.image('bullet', './assets/bullet1.png')
     this.load.image('blue_button_rectangle_flat', '/assets/button_rectangle_depth_flat.png')
     this.load.image('carePackage', '/assets/carePackage.png')

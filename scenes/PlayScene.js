@@ -6,6 +6,7 @@ import UpgradeScene from './UpgradeScene'
 import CarePackage from '../entities/CarePackage'
 import HealthPackage from '../entities/HealthPackage'
 import Turret from '../entities/Turret'
+import Tank from '../entities/Tank'
 
 const initialTankSpeed = 250;
 const initialSpeedDown = 300;
@@ -18,15 +19,12 @@ export default class PlayScene extends Phaser.Scene {
     this.tank;
     this.tankgun;
     this.cursor;
-    this.tankSpeed=initialTankSpeed;
     this.missile1Group;
     this.spawnInterval = 1000;
     this.spawnRate = 1;
     this.nextSpawnTimer = 2000;
     this.score = 0;
     this.playerHealth = 100;
-    this.fireInterval = 100;
-    this.nextFireTimer = this.fireInterval;
     this.funds = 10000;
     this.bulletSpeed = 500;
     this.nextCarePackageTimer = 2000;
@@ -37,7 +35,6 @@ export default class PlayScene extends Phaser.Scene {
     this.sizes={
         width:1920,
         height:960,
-        tankGunLength:145,
       }
   }
 
@@ -47,28 +44,6 @@ export default class PlayScene extends Phaser.Scene {
   create() {
     
     this.add.image(0,0,"bg").setOrigin(0,0);
-
-
-
-    // Create a container to hold the tank and the tank gun
-    this.tankContainer = this.add.container(this.sizes.width / 2 - 100, this.sizes.height - 265);
-
-    // Create the tank and add it to the container
-    this.tank = this.add.image(0, 0, "tank").setOrigin(0, 0);
-
-    // Create the tank gun and add it to the container
-    this.tankgun = this.add.image(0, 0, "tankgun").setOrigin(.5, 0)
-    this.tankgun.setPosition(this.tank.width / 2, 50);
-
-    // Add the tank and tank gun to the container
-    this.tankContainer.add([this.tank, this.tankgun]);  // TODO get rid of one of these duplicate lines
-    this.physics.world.enable(this.tankContainer);
-    this.tankContainer.body.setImmovable(true);
-    this.tankContainer.body.allowGravity = false;
-    this.tankContainer.body.setCollideWorldBounds(true);
-    this.tankContainer.add([this.tankgun, this.tank]);
-    this.tankContainer.body.setSize(this.tank.displayWidth, this.tank.displayHeight)
-
 
     this.missile1Group = this.physics.add.group({
         maxSize: 100
@@ -84,13 +59,13 @@ export default class PlayScene extends Phaser.Scene {
 
     this.carePackageGroup = this.physics.add.group({
         classType: CarePackage,
-        maxSize: 1000,
+        maxSize: 100,
         runChildUpdate: true
     })
 
     this.healthPackageGroup = this.physics.add.group({
         classType: HealthPackage,
-        maxSize: 1000,
+        maxSize: 100,
         runChildUpdate: true
     })
 
@@ -100,26 +75,27 @@ export default class PlayScene extends Phaser.Scene {
         runChildUpdate: true
     })
 
+    this.tankGroup = this.physics.add.group({
+        classType: Tank,
+        maxSize: 1,
+        runChildUpdate: true
+    })
+
+    this.tank = new Tank(this, this.sizes.width / 2, this.sizes.height - 265)
+    this.tankGroup.add(this.tank, true)
+
+
     this.cursor = this.input.keyboard.addKeys("W,A,S,D, SPACE");
 
-    // Create collision between Missile1 and Bullet
+
+    // Create collisions
     this.physics.add.overlap(this.missile1Group, this.bulletGroup, this.collision, null, this);
-
-    // Create collision between CarePackage and Bullet
     this.physics.add.overlap(this.carePackageGroup, this.bulletGroup, this.bulletCarePackageCollision, null, this);
-
-    // Create collision between HealthPackage and Bullet
     this.physics.add.overlap(this.healthPackageGroup, this.bulletGroup, this.bulletHealthPackageCollision, null, this);
+    this.physics.add.overlap(this.carePackageGroup, this.tank, this.carePackageTankCollision, null, this);
+    this.physics.add.overlap(this.healthPackageGroup, this.tank, this.healthPackageTankCollision, null, this);
 
-    // Create collision between CarePackage and Tank
-    this.physics.add.overlap(this.carePackageGroup, this.tankContainer, this.carePackageTankCollision, null, this);
-
-    // Create collision between HealthPackage and Tank
-    this.physics.add.overlap(this.healthPackageGroup, this.tankContainer, this.healthPackageTankCollision, null, this);
-
-
-
-
+    // Add top texts
     this.scoreText = this.add
     .bitmapText(this.sizes.width - 200, 20, 'arcade', 'Score: 0000', 24)
     .setOrigin(0.5);
@@ -142,27 +118,18 @@ export default class PlayScene extends Phaser.Scene {
 
   update(time, delta){
 
-    this.rotateTankGunToPointer()
-
     for (const missile1 of this.missile1Array) {
         missile1.update(time, delta)
     }
 
-    this.moveTank()
-
     this.checkMissileSpawnTimer(time, delta)
     this.checkCarePackageSpawnTimer(time, delta)
     this.checkHealthPackageSpawnTimer(time, delta)
-    this.checkFireTimer(time, delta)
 
     // Update text
     this.scoreText.setText('Score: ' + this.score)
     this.healthText.setText('Health: ' + this.playerHealth)
     this.fundsText.setText('Funds: ' + this.funds)
-
-    // console.log(time)
-    // console.log(this.nextSpawnTimer)
-    // console.log(this.spawnInterval)
 
   }
 
@@ -203,27 +170,6 @@ export default class PlayScene extends Phaser.Scene {
     missile1.destroy()
     this.score += 10
   }
-
-  checkFireTimer(time, delta) {
-    // Decrease the missile spawn timer
-    this.nextFireTimer -= delta;
-    if (this.nextFireTimer <= 0 && this.input.activePointer.leftButtonDown()) {
-        this.fireBullet()
-        this.nextFireTimer = this.fireInterval;
-    }
-  }
-
-  moveTank() {
-    // Perform tank movement
-    if(this.cursor.A.isDown) {
-        this.tankContainer.body.setVelocityX(-this.tankSpeed);
-      } else if (this.cursor.D.isDown) {
-        this.tankContainer.body.setVelocityX(this.tankSpeed);
-      } else {
-        this.tankContainer.body.setVelocity(0);
-      }
-  }
-
 
   checkMissileSpawnTimer(time, delta) {
     // Decrease the missile spawn timer
@@ -301,32 +247,5 @@ export default class PlayScene extends Phaser.Scene {
   getRandomX() {
     return Math.floor(Math.random() * this.sizes.width)
   }
-
-  fireBullet() {
-    // Fire bullet based on tank and tankgun location
-    if (this.input.activePointer.leftButtonDown()) {
-        const shoot = this.bulletGroup.get()
-        if (shoot) {
-            shoot.fire(this.tankContainer.x+this.tankgun.x-(this.sizes.tankGunLength*Math.sin(this.tankgun.rotation)),
-                 this.tankContainer.y + this.tankgun.y+(this.sizes.tankGunLength*Math.cos(this.tankgun.rotation)),
-                  this.tankgun.rotation + (1.855), this.bulletSpeed)
-            }
-        }
-  }
-
-
-  rotateTankGunToPointer() {
-
-    const pointer = this.input.activePointer;
-
-    // Calculate the angle between the tank gun and the mouse pointer
-    const angle = Phaser.Math.Angle.Between(
-      this.tankContainer.x + this.tankgun.x,
-      this.tankContainer.y + this.tankgun.y,
-      pointer.worldX,
-      pointer.worldY
-    ) + (3*3.1415/2);
-
-    this.tankgun.setRotation(angle);
-  }
+  
 }

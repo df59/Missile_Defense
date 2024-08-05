@@ -24,6 +24,7 @@ export default class Bullet extends Phaser.Physics.Arcade.Sprite {
     this.x += Math.cos(this.direction) * this.speed * delta
     this.y += Math.sin(this.direction) * this.speed * delta
 
+    // If bullet is out of bounds delete it
     if (this.x < 0 || this.y < 0 || this.x > 1960 || this.y > 960) {
       this.setActive(false)
       this.setVisible(false)

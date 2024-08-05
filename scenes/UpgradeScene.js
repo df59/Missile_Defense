@@ -2,22 +2,16 @@ import Phaser from 'phaser';
 import TurretUpgradeScene from './TurretUpgradeScene';
 import Turret from '../entities/Turret';
 
-export default class UpgradeScene extends Phaser.Scene {
+export default class TankUpgradeScene extends Phaser.Scene {
   constructor() {
     super('upgrade-scene');
     this.playScene;
-    this.upgrades = {
-        'fire-rate': { cost: 100, description: 'Increase bullet fire rate.', tier: 0 },
-        'bullet-speed': { cost: 150, description: 'Increase bullet speed.', tier: 0 },
-        'tank-speed': { cost: 200, description: 'Increase tank movement speed.', tier: 0 },
-        'buy-turret': { cost: 500, description: 'Buy a turret that auto fires.', tier: 0 },
-        'bullet-damage': { cost: 500, description: 'Increase bullet damage output.', tier: 0 },
-
-      };  
+    this.tank;
     }
 
   init(data) {
     this.playScene = data.playScene; // Receive the PlayScene reference
+    this.tank = data.tank;
   }
 
   create() {
@@ -28,9 +22,6 @@ export default class UpgradeScene extends Phaser.Scene {
     const header1 = this.add.text(this.cameras.main.width / 2 - 180, this.cameras.main.height / 2 - 200, 'Upgrade', { fontSize: '32px', fill: '#fff' }).setOrigin(0.5);
     const header2 = this.add.text(this.cameras.main.width / 2, this.cameras.main.height / 2 - 200, 'Cost', { fontSize: '32px', fill: '#fff' }).setOrigin(0.5);
     const header3 = this.add.text(this.cameras.main.width / 2 + 180, this.cameras.main.height / 2 - 200, 'Tier', { fontSize: '32px', fill: '#fff' }).setOrigin(0.5);
-
-    
-
 
     // Create buttons
     const button1 = this.createButton(this.cameras.main.width / 2, this.cameras.main.height / 2 + 350, 'Close', null, () => {
@@ -48,12 +39,6 @@ export default class UpgradeScene extends Phaser.Scene {
 
     // Funds textbox
     this.fundsText = this.add.text(this.cameras.main.width / 2 - 200, this.cameras.main.height / 2 + 350, `Funds: ${this.playScene.funds}`, { fontSize: '24px', fill: '#fff' }).setOrigin(0.5);
-
-        
-    // // Add buttons to the scene
-    // this.add.existing(button1);
-    // this.add.existing(button2);
-    // this.add.existing(button3);
   }
 
   createButton(x, y, text, upgradeKey, callback) {
@@ -62,13 +47,13 @@ export default class UpgradeScene extends Phaser.Scene {
 
     // Set cost and tier text
     let costText, tierText
-    if(this.upgrades[upgradeKey]) { // If not the close button
-        costText = this.add.text(x + 180, y, `${this.upgrades[upgradeKey].cost}`, { fontSize: '24px', fill: '#fff' }).setOrigin(0.5);
-        tierText = this.add.text(x + 360, y, `${this.upgrades[upgradeKey].tier}`, { fontSize: '24px', fill: '#fff' }).setOrigin(0.5);
+    if(this.tank.upgrades[upgradeKey]) { // If not the close button
+        costText = this.add.text(x + 180, y, `${this.tank.upgrades[upgradeKey].cost}`, { fontSize: '24px', fill: '#fff' }).setOrigin(0.5);
+        tierText = this.add.text(x + 360, y, `${this.tank.upgrades[upgradeKey].tier}`, { fontSize: '24px', fill: '#fff' }).setOrigin(0.5);
     }
 
     // Make the button interactive
-    if(this.upgrades[upgradeKey]) {  // If not the close button
+    if(this.tank.upgrades[upgradeKey]) {  // If not the close button
         button.on('pointerdown', () => {
                 this.upgrade(upgradeKey, costText, tierText);
         });
@@ -78,15 +63,15 @@ export default class UpgradeScene extends Phaser.Scene {
 
     // Hover animation
     button.on('pointerover', () => {
-        if(this.upgrades[upgradeKey] && this.playScene.funds < this.upgrades[upgradeKey].cost) {
+        if(this.tank.upgrades[upgradeKey] && this.playScene.funds < this.tank.upgrades[upgradeKey].cost) {
             button.setTint(0xff0000);
             buttonText.setStyle({ fill: '#f39c12' });
         } else {
             button.setTint(0x5d12f3);
             buttonText.setStyle({ fill: '#f39c12' });    
         }
-        if(this.upgrades[upgradeKey]) {
-            this.descriptionText.setText(this.upgrades[upgradeKey].description);
+        if(this.tank.upgrades[upgradeKey]) {
+            this.descriptionText.setText(this.tank.upgrades[upgradeKey].description);
         }
     });
 
@@ -107,41 +92,41 @@ export default class UpgradeScene extends Phaser.Scene {
     switch(option) {
     case 'fire-rate':
         console.log('Fire Rate selected');
-        if(this.upgrades[option] && this.playScene.funds >= this.upgrades[option].cost) {
-            this.playScene.fireInterval -= 10;
-            this.playScene.funds -= this.upgrades[option].cost;
-            this.upgrades[option].tier += 1;
+        if(this.tank.upgrades[option] && this.playScene.funds >= this.tank.upgrades[option].cost) {
+            this.tank.fireInterval -= 10;
+            this.playScene.funds -= this.tank.upgrades[option].cost;
+            this.tank.upgrades[option].tier += 1;
         } else {
             this.descriptionText.setText("Insufficient funds.")
         }
         break;
     case 'bullet-speed':
         console.log('Bullet Speed selected');
-        if(this.upgrades[option] && this.playScene.funds >= this.upgrades[option].cost) {
-            this.playScene.bulletSpeed += 100;
-            this.playScene.funds -= this.upgrades[option].cost;
-            this.upgrades[option].tier += 1;
+        if(this.tank.upgrades[option] && this.playScene.funds >= this.tank.upgrades[option].cost) {
+            this.tank.bulletSpeed += 100;
+            this.playScene.funds -= this.tank.upgrades[option].cost;
+            this.tank.upgrades[option].tier += 1;
         } else {
             this.descriptionText.setText("Insufficient funds.")
         }
         break;
     case 'tank-speed':
         console.log('Tank Speed selected');
-        if(this.upgrades[option] && this.playScene.funds >= this.upgrades[option].cost) {
-            this.playScene.tankSpeed += 100;
-            this.playScene.funds -= this.upgrades[option].cost;
-            this.upgrades[option].tier += 1;
+        if(this.tank.upgrades[option] && this.playScene.funds >= this.tank.upgrades[option].cost) {
+            this.tank.tankSpeed += 100;
+            this.playScene.funds -= this.tank.upgrades[option].cost;
+            this.tank.upgrades[option].tier += 1;
         } else {
             this.descriptionText.setText("Insufficient funds.")
         }
         break;
     case 'buy-turret':
         console.log('Buy Turret selected');
-        if(this.upgrades[option] && this.playScene.funds >= this.upgrades[option].cost) {
+        if(this.tank.upgrades[option] && this.playScene.funds >= this.tank.upgrades[option].cost) {
             const turret = new Turret(this.playScene, 500, this.playScene.sizes.height - 200);
             this.playScene.turretGroup.add(turret, true)
-            this.playScene.funds -= this.upgrades[option].cost;
-            this.upgrades[option].tier += 1;
+            this.playScene.funds -= this.tank.upgrades[option].cost;
+            this.tank.upgrades[option].tier += 1;
         } else {
             this.descriptionText.setText("Insufficient funds.")
         }
@@ -151,12 +136,8 @@ export default class UpgradeScene extends Phaser.Scene {
         break;
     }
     // Update texts
-    costText.setText(`${this.upgrades[option].cost}`);
-    tierText.setText(`${this.upgrades[option].tier}`);
-    this.updateFundsText();
-  }
-
-  updateFundsText() {
+    costText.setText(`${this.tank.upgrades[option].cost}`);
+    tierText.setText(`${this.tank.upgrades[option].tier}`);
     this.fundsText.setText(`Funds: ${this.playScene.funds}`);
   }
 

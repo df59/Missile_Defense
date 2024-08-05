@@ -17,7 +17,6 @@ export default class PlayScene extends Phaser.Scene {
   constructor(){
     super('play-scene')
     this.tank;
-    this.tankgun;
     this.cursor;
     this.missile1Group;
     this.spawnInterval = 1000;
@@ -26,7 +25,6 @@ export default class PlayScene extends Phaser.Scene {
     this.score = 0;
     this.playerHealth = 100;
     this.funds = 10000;
-    this.bulletSpeed = 500;
     this.nextCarePackageTimer = 2000;
     this.carePackageSpawnInterval = 10000;
     this.nextHealthPackageTimer = 2000;
@@ -46,10 +44,10 @@ export default class PlayScene extends Phaser.Scene {
     this.add.image(0,0,"bg").setOrigin(0,0);
 
     this.missile1Group = this.physics.add.group({
-        maxSize: 100
+        classType: Missile1,
+        maxSize: 100,
+        runChildUpdate: true
     })
-    this.missile1Array = []
-
 
     this.bulletGroup = this.physics.add.group({
         classType: Bullet,
@@ -83,6 +81,8 @@ export default class PlayScene extends Phaser.Scene {
 
     this.tank = new Tank(this, this.sizes.width / 2, this.sizes.height - 265)
     this.tankGroup.add(this.tank, true)
+    this.tank.body.setCollideWorldBounds(true);
+
 
 
     this.cursor = this.input.keyboard.addKeys("W,A,S,D, SPACE");
@@ -109,18 +109,14 @@ export default class PlayScene extends Phaser.Scene {
     .setOrigin(0.5);
 
     // Key to trigger the upgrade scene
-    this.input.keyboard.on('keydown-U', () => {
+    this.input.keyboard.on('keydown-SPACE', () => {
         this.scene.pause();
-        this.scene.launch('upgrade-scene', { playScene: this }); // pass reference to this scene
+        this.scene.launch('upgrade-scene', { playScene: this, tank: this.tank }); // pass reference to this scene
       });
 
   }
 
   update(time, delta){
-
-    for (const missile1 of this.missile1Array) {
-        missile1.update(time, delta)
-    }
 
     this.checkMissileSpawnTimer(time, delta)
     this.checkCarePackageSpawnTimer(time, delta)
@@ -176,7 +172,7 @@ export default class PlayScene extends Phaser.Scene {
     this.nextSpawnTimer -= delta;
     if (this.nextSpawnTimer <= 0) {
         this.spawnMissiles();
-        this.spawnInterval *= .99
+        this.spawnInterval *= .999
         this.nextSpawnTimer = this.spawnInterval;
     }
 
@@ -240,12 +236,11 @@ export default class PlayScene extends Phaser.Scene {
         missile1.setVisible(true)
   
         this.missile1Group.add(missile1, true)
-        this.missile1Array.push(missile1)
       }
   }
 
   getRandomX() {
     return Math.floor(Math.random() * this.sizes.width)
   }
-  
+
 }

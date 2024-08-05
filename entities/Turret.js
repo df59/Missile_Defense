@@ -4,7 +4,7 @@ export default class Turret extends Phaser.GameObjects.Container {
     constructor(scene, x, y) {
         super(scene, x, y);
 
-        this.fireInterval = 100;
+        this.fireInterval = 150;
         this.nextFireTimer = this.fireInterval;
         this.bulletSpeed = 500;
         this.turretGunLength = 60;
@@ -17,50 +17,36 @@ export default class Turret extends Phaser.GameObjects.Container {
         this.modes = {
             POINT: 1,
             FOLLOW: 2,
-            SPRAY: 3
         };
 
+        // Double-click detection variables
+        this.clickTime = 0;
+        this.doubleClickThreshold = 250; // Time in ms to detect double-click
+
         this.targetPoint = null;
-
         this.currentMode = this.modes.FOLLOW
-
         this.playScene = scene;
 
-        // Create the turret sprite
+        // Setup sprites for the container
         this.turret = scene.add.image(0, 0, "turret");
         this.turret.setScale(1.3);
         this.turret.setOrigin(0.5, 0.5);
-
-        // Create the turret gun sprite
         this.turretGun = scene.add.image(0, -40, "turretGun");
         this.turretGun.setScale(1);
         this.turretGun.setOrigin(0.1, 0.5);
-
-        // Add both sprites to the container
         this.add([this.turret, this.turretGun]);
 
-        // Enable physics for the container
+        // Setup physics for the container
         scene.physics.world.enable(this);
-        this.body.setImmovable(true);
-        this.body.allowGravity = false;
         this.body.setSize(this.turret.displayWidth, this.turret.displayHeight);
-
-        // Add this container to the scene
-        scene.add.existing(this);
 
         // Make the container interactive and enable dragging
         this.setSize(this.turret.displayWidth, this.turret.displayHeight);
         this.setInteractive();
         scene.input.setDraggable(this);
 
-        // Double-click detection variables
-        this.clickTime = 0;
-        this.doubleClickThreshold = 250; // Time in ms to detect double-click
-
         // Add pointer events
         this.on('pointerup', this.onPointerUp, this);
-
-        // Drag events
         this.on('drag', this.onDrag, this);
     }
 
@@ -75,12 +61,10 @@ export default class Turret extends Phaser.GameObjects.Container {
 
     onPointerUp(pointer) {
         const currentTime = this.scene.time.now;
-
         // Check if the click is within the double-click threshold
         if (currentTime - this.clickTime < this.doubleClickThreshold) {
             this.openTurretUpgradeScene();
         }
-
         // Update the click time
         this.clickTime = currentTime;
     }
@@ -91,6 +75,7 @@ export default class Turret extends Phaser.GameObjects.Container {
     }
 
     rotateGunToPoint(targetX, targetY) {
+        // Point the gun at the set location
         const angle = Phaser.Math.Angle.Between(this.x, this.y, targetX, targetY);
         this.turretGun.setRotation(angle);
       }
@@ -105,16 +90,16 @@ export default class Turret extends Phaser.GameObjects.Container {
             pointer.worldX,
             pointer.worldY
         );
-
         this.turretGun.setRotation(angle);
     }
 
     onDrag(pointer, dragX, dragY) {
-        this.setPosition(dragX, this.y); // Update position while dragging
+        // Update position while dragging
+        this.setPosition(dragX, this.y);
     }
 
     checkFireTimer(time, delta) {
-        // Decrease the missile spawn timer
+        // Check if a bullet can be fired yet
         this.nextFireTimer -= delta;
         if (this.nextFireTimer <= 0) {
             this.fireBullet()
@@ -130,7 +115,6 @@ export default class Turret extends Phaser.GameObjects.Container {
                      this.y + this.turretGun.y+(this.turretGunLength*Math.sin(this.turretGun.rotation)),
                       this.turretGun.rotation + (.28), this.bulletSpeed)
                 }
-            
       }
 
     openPointModeScene() {

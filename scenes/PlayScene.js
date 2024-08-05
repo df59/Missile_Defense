@@ -96,7 +96,7 @@ export default class PlayScene extends Phaser.Scene {
 
     this.turretGroup = this.physics.add.group({
         classType: Turret,
-        maxSize: 10,
+        maxSize: 100,
         runChildUpdate: true
     })
 

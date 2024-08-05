@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import TurretScene from './TurretScene';
+import TurretUpgradeScene from './TurretUpgradeScene';
 import Turret from '../entities/Turret';
 
 export default class UpgradeScene extends Phaser.Scene {
@@ -10,7 +10,8 @@ export default class UpgradeScene extends Phaser.Scene {
         'fire-rate': { cost: 100, description: 'Increase bullet fire rate.', tier: 0 },
         'bullet-speed': { cost: 150, description: 'Increase bullet speed.', tier: 0 },
         'tank-speed': { cost: 200, description: 'Increase tank movement speed.', tier: 0 },
-        'buy-turret': { cost: 500, description: 'Buy a turret that auto fires.', tier: 0 }
+        'buy-turret': { cost: 500, description: 'Buy a turret that auto fires.', tier: 0 },
+        'bullet-damage': { cost: 500, description: 'Increase bullet damage output.', tier: 0 },
 
       };  
     }
@@ -22,32 +23,31 @@ export default class UpgradeScene extends Phaser.Scene {
   create() {
     // Create the upgrade panel
     const bg = this.add.rectangle(0, 0, this.cameras.main.width, this.cameras.main.height, 0x000000, .6).setOrigin(0); // Make background faded
-    const panel = this.add.rectangle(this.cameras.main.width / 2, this.cameras.main.height / 2, 600, 600, 0x348ceb, .5).setOrigin(0.5);
-    const title = this.add.text(this.cameras.main.width / 2, this.cameras.main.height / 2 - 260, 'Upgrades', { fontSize: '32px', fill: '#fff' }).setOrigin(0.5);
+    const panel = this.add.rectangle(this.cameras.main.width / 2, this.cameras.main.height / 2 + 50, 600, 800, 0x348ceb, .7).setOrigin(0.5);
+    const title = this.add.text(this.cameras.main.width / 2, this.cameras.main.height / 2 - 260, 'Main Tank Store', { fontSize: '32px', fill: '#fff' }).setOrigin(0.5);
     const header1 = this.add.text(this.cameras.main.width / 2 - 180, this.cameras.main.height / 2 - 200, 'Upgrade', { fontSize: '32px', fill: '#fff' }).setOrigin(0.5);
     const header2 = this.add.text(this.cameras.main.width / 2, this.cameras.main.height / 2 - 200, 'Cost', { fontSize: '32px', fill: '#fff' }).setOrigin(0.5);
     const header3 = this.add.text(this.cameras.main.width / 2 + 180, this.cameras.main.height / 2 - 200, 'Tier', { fontSize: '32px', fill: '#fff' }).setOrigin(0.5);
-    const header5 = this.add.text(this.cameras.main.width / 2 + 180, this.cameras.main.height / 2 - 200, 'Tier', { fontSize: '32px', fill: '#fff' }).setOrigin(0.5);
 
     
 
 
     // Create buttons
-    const button1 = this.createButton(this.cameras.main.width / 2 - 180, this.cameras.main.height / 2 - 130, 'Fire Rate', 'fire-rate', null);
-    const button2 = this.createButton(this.cameras.main.width / 2 - 180, this.cameras.main.height / 2 - 60, 'Bullet Speed', 'bullet-speed', null);
-    const button3 = this.createButton(this.cameras.main.width / 2 - 180, this.cameras.main.height / 2 + 10, 'Tank Speed', 'tank-speed', null);
-    const button4 = this.createButton(this.cameras.main.width / 2, this.cameras.main.height / 2 + 250, 'Close', null, () => {
-      this.scene.stop();
-      this.scene.resume('play-scene');
-    });
-
-    const button5 = this.createButton(this.cameras.main.width / 2 - 180, this.cameras.main.height / 2 + 80, 'Buy Turret', 'buy-turret', null);
+    const button1 = this.createButton(this.cameras.main.width / 2, this.cameras.main.height / 2 + 350, 'Close', null, () => {
+        this.scene.stop();
+        this.scene.resume('play-scene');
+      });
+    const button2 = this.createButton(this.cameras.main.width / 2 - 180, this.cameras.main.height / 2 - 130, 'Fire Rate', 'fire-rate', null);
+    const button3 = this.createButton(this.cameras.main.width / 2 - 180, this.cameras.main.height / 2 - 60, 'Bullet Speed', 'bullet-speed', null);
+    const button4 = this.createButton(this.cameras.main.width / 2 - 180, this.cameras.main.height / 2 + 10, 'Bullet Damage', 'bullet-damage', null);
+    const button5 = this.createButton(this.cameras.main.width / 2 - 180, this.cameras.main.height / 2 + 80, 'Tank Speed', 'tank-speed', null);
+    const button6 = this.createButton(this.cameras.main.width / 2 - 180, this.cameras.main.height / 2 + 150, 'Buy Turret', 'buy-turret', null);
 
     // Description textbox
-    this.descriptionText = this.add.text(this.cameras.main.width / 2, this.cameras.main.height / 2 + 150, '', { fontSize: '24px', fill: '#fff' }).setOrigin(0.5);
+    this.descriptionText = this.add.text(this.cameras.main.width / 2, this.cameras.main.height / 2 + 250, '', { fontSize: '24px', fill: '#fff' }).setOrigin(0.5);
 
     // Funds textbox
-    this.fundsText = this.add.text(this.cameras.main.width / 2 - 200, this.cameras.main.height / 2 + 250, `Funds: ${this.playScene.funds}`, { fontSize: '24px', fill: '#fff' }).setOrigin(0.5);
+    this.fundsText = this.add.text(this.cameras.main.width / 2 - 200, this.cameras.main.height / 2 + 350, `Funds: ${this.playScene.funds}`, { fontSize: '24px', fill: '#fff' }).setOrigin(0.5);
 
         
     // // Add buttons to the scene
@@ -138,13 +138,10 @@ export default class UpgradeScene extends Phaser.Scene {
     case 'buy-turret':
         console.log('Buy Turret selected');
         if(this.upgrades[option] && this.playScene.funds >= this.upgrades[option].cost) {
-            const turret = new Turret(this.playScene, 500, this.playScene.sizes.height - 170);
+            const turret = new Turret(this.playScene, 500, this.playScene.sizes.height - 200);
             this.playScene.turretGroup.add(turret, true)
             this.playScene.funds -= this.upgrades[option].cost;
             this.upgrades[option].tier += 1;
-            // this.scene.setVisible(false);
-            // this.scene.pause();
-            // this.scene.launch('turret-scene', { playScene: this.playScene });
         } else {
             this.descriptionText.setText("Insufficient funds.")
         }

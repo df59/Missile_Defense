@@ -3,7 +3,8 @@ import Phaser from 'phaser'
 import PlayScene from './scenes/PlayScene'
 import LoaderScene from './scenes/LoaderScene';
 import UpgradeScene from './scenes/UpgradeScene';
-import TurretScene from './scenes/TurretScene';
+import TurretScene from './scenes/TurretUpgradeScene';
+import PointModeScene from './scenes/PointModeScene';
 
 const sizes={
   width:1920,
@@ -40,7 +41,8 @@ const config = {
     LoaderScene,
     PlayScene,
     UpgradeScene,
-    TurretScene
+    TurretScene,
+    PointModeScene
   ]
 }
 

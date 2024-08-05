@@ -36,7 +36,7 @@ export default class HealthPackage extends Phaser.GameObjects.Container {
 
     update(time, delta) {
         if (this.active && this.body) {
-            if (this.y < this.playScene.sizes.height - 220) {
+            if (this.y < this.playScene.sizes.height - 200) {
                 this.body.setVelocityY(this.speed)
             } else {
                 this.body.setVelocityY(0)

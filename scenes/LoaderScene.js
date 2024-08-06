@@ -10,6 +10,7 @@ export default class LoaderScene extends Phaser.Scene {
     this.load.image("missile1", "./assets/missile1.png");
     this.load.image("missile2", "./assets/missile2.png");
     this.load.image("missile3", "./assets/missile3.png");
+    this.load.image("missile4", "./assets/missile4.png");
     this.load.image("tankGun", "./assets/tankgun.png");
     this.load.image("bullet", "./assets/bullet1.png");
     this.load.image("blue_button_rectangle_flat", "./assets/button_rectangle_depth_flat.png");

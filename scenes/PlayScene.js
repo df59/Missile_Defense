@@ -3,6 +3,7 @@ import Phaser from "phaser";
 import Missile1 from "../entities/Missile1";
 import Missile2 from "../entities/Missile2";
 import Missile3 from "../entities/Missile3";
+import Missile4 from "../entities/Missile4";
 import Bullet from "../entities/Bullet";
 import UpgradeScene from "./UpgradeScene";
 import CarePackage from "../entities/CarePackage";
@@ -59,6 +60,13 @@ export default class PlayScene extends Phaser.Scene {
         spawnRate: 1,
         decayRate: 0.995,
       },
+      missile4: {
+        spawnInterval: 120000,
+        minSpawnInterval: 100000,
+        nextSpawnTimer: 120,
+        spawnRate: 1,
+        decayRate: 0.995,
+      },
       carePackage: {
         spawnInterval: 20000,
         minSpawnInterval: 4000,
@@ -88,13 +96,21 @@ export default class PlayScene extends Phaser.Scene {
       maxSize: 100,
       runChildUpdate: true,
     });
+
     this.missile2Group = this.physics.add.group({
       classType: Missile2,
       maxSize: 100,
       runChildUpdate: true,
     });
+
     this.missile3Group = this.physics.add.group({
       classType: Missile3,
+      maxSize: 100,
+      runChildUpdate: true,
+    });
+
+    this.missile4Group = this.physics.add.group({
+      classType: Missile4,
       maxSize: 100,
       runChildUpdate: true,
     });
@@ -236,6 +252,9 @@ export default class PlayScene extends Phaser.Scene {
       case "missile3":
         this.spawnMissile3();
         break;
+      case "missile4":
+        this.spawnMissile4();
+        break;
       case "carePackage":
         this.spawnCarePackage();
         break;
@@ -276,6 +295,20 @@ export default class PlayScene extends Phaser.Scene {
   spawnMissile3() {
     for (let i = 0; i < this.spawns["missile2"].spawnRate; i++) {
       const missile2 = new Missile3(this, 300, 300);
+
+      const xPos = this.getRandomX();
+      const yPos = 0;
+      missile2.setPosition(xPos, yPos);
+      missile2.setActive(true);
+      missile2.setVisible(true);
+
+      this.missile2Group.add(missile2, true);
+    }
+  }
+
+  spawnMissile4() {
+    for (let i = 0; i < this.spawns["missile2"].spawnRate; i++) {
+      const missile2 = new Missile4(this, 300, 300);
 
       const xPos = this.getRandomX();
       const yPos = 0;

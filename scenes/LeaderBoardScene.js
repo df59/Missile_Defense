@@ -1,8 +1,8 @@
 import Phaser from "phaser";
 
-export default class MainMenuScene extends Phaser.Scene {
+export default class LeaderBoardScene extends Phaser.Scene {
   constructor() {
-    super("main-menu-scene");
+    super("leaderboard-scene");
   }
 
   create() {
@@ -31,43 +31,23 @@ export default class MainMenuScene extends Phaser.Scene {
     const title = this.add
       .text(
         this.cameras.main.width / 2,
-        this.cameras.main.height / 2 - 200,
-        "Missile Defense",
-        { fontSize: "48px", fill: "#fff" }
+        this.cameras.main.height / 2 - 250,
+        "Leaderboard",
+        { fontSize: "32px", fill: "#fff" }
       )
       .setOrigin(0.5);
 
-    // Create buttons
-    const playButton = this.createButton(
-      this.cameras.main.width / 2,
-      this.cameras.main.height / 2 - 50,
-      "Play",
-      () => {
-        this.scene.start("play-scene");
-      }
-    );
-    const highScoresButton = this.createButton(
-      this.cameras.main.width / 2,
-      this.cameras.main.height / 2 + 50,
-      "Leaderboard",
-      () => {
-        this.scene.start("leaderboard-scene");
-      }
-    );
-    const tutorialButton = this.createButton(
-      this.cameras.main.width / 2,
-      this.cameras.main.height / 2 + 150,
-      "Tutorial",
-      () => {
-        this.scene.start("tutorial-scene");
-      }
-    );
+    this.displayHighScores();
 
-    // Key to start the play scene
-    this.input.keyboard.on("keydown-SPACE", () => {
-      this.scene.stop();
-      this.scene.start("play-scene");
-    });
+    // Create a back button
+    const backButton = this.createButton(
+      this.cameras.main.width / 2,
+      this.cameras.main.height / 2 + 250,
+      "Back",
+      () => {
+        this.scene.start("main-menu-scene");
+      }
+    );
   }
 
   createButton(x, y, text, callback) {
@@ -79,10 +59,7 @@ export default class MainMenuScene extends Phaser.Scene {
       .text(0, 0, text, { fontSize: "32px", fill: "#fff" })
       .setOrigin(0.5);
 
-    // Make the button click call the callback variable
-    if (callback) {
-      button.on("pointerdown", callback);
-    }
+    button.on("pointerdown", callback);
 
     // Hover animation
     button.on("pointerover", () => {
@@ -100,6 +77,39 @@ export default class MainMenuScene extends Phaser.Scene {
     const buttonContainer = this.add.container(0, 0, [button, buttonText]);
     buttonContainer.setPosition(x, y);
 
+    // Add numbers for ranks
+    for (let i = 1; i < 11; i++) {
+      this.add
+        .text(
+          this.cameras.main.width / 2 - 150,
+          this.cameras.main.height / 2 - 240 + i * 40,
+          i + ")",
+          { fontSize: "24px", fill: "#fff" }
+        )
+        .setOrigin(0.5);
+    }
+
     return buttonContainer;
+  }
+
+  displayHighScores() {
+    // Retrieve and display high scores
+
+    const highScores = JSON.parse(localStorage.getItem("highScores")) || [];
+
+    // Sort scores in descending order
+    const topScores = highScores.sort((a, b) => b.score - a.score).slice(0, 10);
+
+    // Display high scores
+    topScores.forEach((score, index) => {
+      this.add
+        .text(
+          this.cameras.main.width / 2,
+          this.cameras.main.height / 2 - 200 + index * 40,
+          `${score.name}: ${score.score}`,
+          { fontSize: "24px", fill: "#fff" }
+        )
+        .setOrigin(0.5);
+    });
   }
 }

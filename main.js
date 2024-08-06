@@ -1,47 +1,47 @@
-import './style.css'
-import Phaser from 'phaser'
-import PlayScene from './scenes/PlayScene'
-import LoaderScene from './scenes/LoaderScene';
-import UpgradeScene from './scenes/UpgradeScene';
-import TurretScene from './scenes/TurretUpgradeScene';
-import PointModeScene from './scenes/PointModeScene';
-import MainMenuScene from './scenes/MainMenuScene';
-import TutorialScene from './scenes/TutorialScene';
-import GameOverScene from './scenes/GameOverScene';
+import "./style.css";
+import Phaser from "phaser";
+import PlayScene from "./scenes/PlayScene";
+import LoaderScene from "./scenes/LoaderScene";
+import UpgradeScene from "./scenes/UpgradeScene";
+import TurretScene from "./scenes/TurretUpgradeScene";
+import PointModeScene from "./scenes/PointModeScene";
+import MainMenuScene from "./scenes/MainMenuScene";
+import TutorialScene from "./scenes/TutorialScene";
+import GameOverScene from "./scenes/GameOverScene";
+import LeaderBoardScene from "./scenes/LeaderBoardScene";
 
-const sizes={
-  width:1920,
-  height:960
-}
+const sizes = {
+  width: 1920,
+  height: 960,
+};
 
 const initialPlayerSpeed = 250;
-const initialSpeedDown = 300
+const initialSpeedDown = 300;
 const spawnInterval = 1000;
 const maxTargets = 10;
 let spawnRate = 1;
 
-
 const missiles = [
-  {key: 'missile1', speed: 200, damage: 10, health: 1},
-  {key: 'missile2', speed: 250, damage: 20, health: 2},
-  {key: 'missile3', speed: 300, damage: 30, health: 3},
-  {key: 'missile4', speed: 350, damage: 40, health: 4},
-]
+  { key: "missile1", speed: 200, damage: 10, health: 1 },
+  { key: "missile2", speed: 250, damage: 20, health: 2 },
+  { key: "missile3", speed: 300, damage: 30, health: 3 },
+  { key: "missile4", speed: 350, damage: 40, health: 4 },
+];
 
 const config = {
-  type:Phaser.WEBGL,
-  width:sizes.width,
-  height:sizes.height,
-  parent:"game",
+  type: Phaser.WEBGL,
+  width: sizes.width,
+  height: sizes.height,
+  parent: "game",
   dom: {
-    createContainer: true
+    createContainer: true,
   },
-  physics:{
-    default:"arcade",
-    arcade:{
+  physics: {
+    default: "arcade",
+    arcade: {
       gravity: false,
-      debug:false
-    }
+      debug: false,
+    },
   },
   scene: [
     LoaderScene,
@@ -51,8 +51,9 @@ const config = {
     PointModeScene,
     MainMenuScene,
     TutorialScene,
-    GameOverScene
-  ]
-}
+    GameOverScene,
+    LeaderBoardScene,
+  ],
+};
 
-const game = new Phaser.Game(config)
+const game = new Phaser.Game(config);

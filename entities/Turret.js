@@ -100,12 +100,7 @@ export default class Turret extends Phaser.GameObjects.Container {
     const pointer = this.playScene.input.activePointer;
 
     // Calculate the angle between the tank gun and the mouse pointer
-    const angle = Phaser.Math.Angle.Between(
-      this.x + this.turretGun.x,
-      this.y + this.turretGun.y,
-      pointer.worldX,
-      pointer.worldY
-    );
+    const angle = Phaser.Math.Angle.Between(this.x + this.turretGun.x, this.y + this.turretGun.y, pointer.worldX, pointer.worldY);
     this.turretGun.setRotation(angle);
   }
 
@@ -128,12 +123,8 @@ export default class Turret extends Phaser.GameObjects.Container {
     const shoot = this.playScene.bulletGroup.get();
     if (shoot) {
       shoot.fire(
-        this.x +
-          this.turretGun.x +
-          this.turretGunLength * Math.cos(this.turretGun.rotation),
-        this.y +
-          this.turretGun.y +
-          this.turretGunLength * Math.sin(this.turretGun.rotation),
+        this.x + this.turretGun.x + this.turretGunLength * Math.cos(this.turretGun.rotation),
+        this.y + this.turretGun.y + this.turretGunLength * Math.sin(this.turretGun.rotation),
         this.turretGun.rotation + 0.28,
         this.bulletSpeed,
         this.bulletDamage

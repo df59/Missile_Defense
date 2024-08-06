@@ -65,13 +65,7 @@ export default class Tank extends Phaser.GameObjects.Container {
 
     // Calculate the angle between the tank gun and the mouse pointer
     const angle =
-      Phaser.Math.Angle.Between(
-        this.x + this.tankGun.x,
-        this.y + this.tankGun.y,
-        pointer.worldX,
-        pointer.worldY
-      ) +
-      (3 * 3.1415) / 2;
+      Phaser.Math.Angle.Between(this.x + this.tankGun.x, this.y + this.tankGun.y, pointer.worldX, pointer.worldY) + (3 * 3.1415) / 2;
 
     this.tankGun.setRotation(angle);
   }
@@ -82,12 +76,8 @@ export default class Tank extends Phaser.GameObjects.Container {
       const shoot = this.playScene.bulletGroup.get();
       if (shoot) {
         shoot.fire(
-          this.x +
-            this.tankGun.x -
-            this.tankGunLength * Math.sin(this.tankGun.rotation),
-          this.y +
-            this.tankGun.y +
-            this.tankGunLength * Math.cos(this.tankGun.rotation),
+          this.x + this.tankGun.x - this.tankGunLength * Math.sin(this.tankGun.rotation),
+          this.y + this.tankGun.y + this.tankGunLength * Math.cos(this.tankGun.rotation),
           this.tankGun.rotation + 1.855,
           this.bulletSpeed,
           this.bulletDamage
@@ -100,10 +90,7 @@ export default class Tank extends Phaser.GameObjects.Container {
     // Check if a bullet can be fired yet
     console.log("checkint tank fire timer");
     this.nextFireTimer -= delta;
-    if (
-      this.nextFireTimer <= 0 &&
-      this.playScene.input.activePointer.leftButtonDown()
-    ) {
+    if (this.nextFireTimer <= 0 && this.playScene.input.activePointer.leftButtonDown()) {
       this.fireBullet();
       this.nextFireTimer = this.fireInterval;
     }

@@ -30,11 +30,11 @@ export default class TankUpgradeScene extends Phaser.Scene {
     const header3 = this.add.text(this.midWidth + 180, this.midHeight - 200, "Tier", { fontSize: "32px", fill: "#fff" }).setOrigin(0.5);
 
     // Create buttons
-    const button1 = this.buttons.createUpgradeButton(this, this.tank, this.midWidth, this.midHeight + 350, "Close", null, () => {
+    const closeButton = this.buttons.createUpgradeButton(this, this.tank, this.midWidth, this.midHeight + 350, "Close", null, () => {
       this.scene.stop();
       this.scene.resume("play-scene");
     });
-    const button2 = this.buttons.createUpgradeButton(
+    const fireRateButton = this.buttons.createUpgradeButton(
       this,
       this.tank,
       this.midWidth - 180,
@@ -43,7 +43,7 @@ export default class TankUpgradeScene extends Phaser.Scene {
       "fire-rate",
       null
     );
-    const button3 = this.buttons.createUpgradeButton(
+    const bulletSpeedButton = this.buttons.createUpgradeButton(
       this,
       this.tank,
       this.midWidth - 180,
@@ -52,7 +52,7 @@ export default class TankUpgradeScene extends Phaser.Scene {
       "bullet-speed",
       null
     );
-    const button4 = this.buttons.createUpgradeButton(
+    const bulletDamageButton = this.buttons.createUpgradeButton(
       this,
       this.tank,
       this.midWidth - 180,
@@ -61,7 +61,7 @@ export default class TankUpgradeScene extends Phaser.Scene {
       "bullet-damage",
       null
     );
-    const button5 = this.buttons.createUpgradeButton(
+    const tankSpeedButton = this.buttons.createUpgradeButton(
       this,
       this.tank,
       this.midWidth - 180,
@@ -70,7 +70,7 @@ export default class TankUpgradeScene extends Phaser.Scene {
       "tank-speed",
       null
     );
-    const button6 = this.buttons.createUpgradeButton(
+    const buyTurretButton = this.buttons.createUpgradeButton(
       this,
       this.tank,
       this.midWidth - 180,

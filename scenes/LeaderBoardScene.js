@@ -1,8 +1,10 @@
 import Phaser from "phaser";
+import Buttons from "./Buttons";
 
 export default class LeaderBoardScene extends Phaser.Scene {
   constructor() {
     super("leaderboard-scene");
+    this.buttons = new Buttons();
   }
 
   create() {
@@ -17,7 +19,7 @@ export default class LeaderBoardScene extends Phaser.Scene {
     this.displayHighScores();
 
     // Create a back button
-    const backButton = this.createButton(this.cameras.main.width / 2, this.cameras.main.height / 2 + 250, "Back", () => {
+    const backButton = this.buttons.createButton(this, this.cameras.main.width / 2, this.cameras.main.height / 2 + 250, "Back", () => {
       this.scene.start("main-menu-scene");
     });
 
@@ -27,32 +29,6 @@ export default class LeaderBoardScene extends Phaser.Scene {
         .text(this.cameras.main.width / 2 - 150, this.cameras.main.height / 2 - 240 + i * 40, i + ")", { fontSize: "24px", fill: "#fff" })
         .setOrigin(0.5);
     }
-  }
-
-  createButton(x, y, text, callback) {
-    const button = this.add.image(0, 0, "blue_button_rectangle_flat").setInteractive();
-    button.setScale(1.5);
-    const buttonText = this.add.text(0, 0, text, { fontSize: "32px", fill: "#fff" }).setOrigin(0.5);
-
-    button.on("pointerdown", callback);
-
-    // Hover animation
-    button.on("pointerover", () => {
-      button.setTint(0x5d12f3);
-      buttonText.setStyle({ fill: "#f39c12" });
-    });
-
-    // Reset hover animation
-    button.on("pointerout", () => {
-      button.clearTint();
-      buttonText.setStyle({ fill: "#fff" });
-    });
-
-    // Create a container to hold the button and text
-    const buttonContainer = this.add.container(0, 0, [button, buttonText]);
-    buttonContainer.setPosition(x, y);
-
-    return buttonContainer;
   }
 
   displayHighScores() {

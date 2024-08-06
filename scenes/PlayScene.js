@@ -35,7 +35,7 @@ export default class PlayScene extends Phaser.Scene {
 
   create() {
     this.score = 0;
-    this.playerHealth = 1000000;
+    this.playerHealth = 1;
     this.funds = 10000;
 
     this.spawns = {

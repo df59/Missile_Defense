@@ -1,8 +1,10 @@
 import Phaser from "phaser";
+import Buttons from "./Buttons";
 
 export default class GameOverScene extends Phaser.Scene {
   constructor() {
     super("game-over-scene");
+    this.buttons = new Buttons();
   }
 
   init(data) {
@@ -29,47 +31,34 @@ export default class GameOverScene extends Phaser.Scene {
     this.nameInput = this.add.dom(this.cameras.main.width / 2, this.cameras.main.height / 2).createFromCache("nameform");
 
     // Create buttons
-    const mainMenuButton = this.createButton(this.cameras.main.width / 2, this.cameras.main.height / 2 + 180, "Main Menu", () => {
-      this.scene.start("main-menu-scene");
-    });
-
-    const submitButton = this.createButton(this.cameras.main.width / 2, this.cameras.main.height / 2 + 100, "Submit Score", () => {
-      let playerName = this.nameInput.getChildByName("name").value.trim();
-
-      if (playerName === "" || playerName.length > 10) {
-        alert("Please enter a valid name (1-10 characters).");
-        return;
+    const mainMenuButton = this.buttons.createButton(
+      this,
+      this.cameras.main.width / 2,
+      this.cameras.main.height / 2 + 180,
+      "Main Menu",
+      () => {
+        this.scene.start("main-menu-scene");
       }
+    );
 
-      console.log(`Player Name: ${playerName}, Score: ${this.score}`);
-      this.submitScore(playerName, this.score);
-      this.scene.start("main-menu-scene");
-    });
-  }
+    const submitButton = this.buttons.createButton(
+      this,
+      this.cameras.main.width / 2,
+      this.cameras.main.height / 2 + 100,
+      "Submit Score",
+      () => {
+        let playerName = this.nameInput.getChildByName("name").value.trim();
 
-  createButton(x, y, text, callback) {
-    const button = this.add.image(0, 0, "blue_button_rectangle_flat").setInteractive();
-    const buttonText = this.add.text(0, 0, text, { fontSize: "24px", fill: "#fff" }).setOrigin(0.5);
+        if (playerName === "" || playerName.length > 10) {
+          alert("Please enter a valid name (1-10 characters).");
+          return;
+        }
 
-    button.on("pointerdown", callback);
-
-    // Create a container to hold the button and text
-    const buttonContainer = this.add.container(0, 0, [button, buttonText]);
-    buttonContainer.setPosition(x, y);
-
-    // Hover animation
-    button.on("pointerover", () => {
-      button.setTint(0x5d12f3);
-      buttonText.setStyle({ fill: "#f39c12" });
-    });
-
-    // Reset hover animation
-    button.on("pointerout", () => {
-      button.clearTint();
-      buttonText.setStyle({ fill: "#fff" });
-    });
-
-    return buttonContainer;
+        console.log(`Player Name: ${playerName}, Score: ${this.score}`);
+        this.submitScore(playerName, this.score);
+        this.scene.start("main-menu-scene");
+      }
+    );
   }
 
   submitScore(playerName, score) {

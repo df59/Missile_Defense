@@ -19,7 +19,7 @@ export default class Missile4 extends Phaser.Physics.Arcade.Image {
       this.setVisible(false);
       this.setActive(false);
       this.destroy();
-      this.playScene.decrementPlayerHealth(10);
+      this.playScene.decrementPlayerHealth(this.damage);
     }
 
     if (this.health < 1) {

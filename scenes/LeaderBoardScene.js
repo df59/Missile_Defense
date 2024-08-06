@@ -8,56 +8,31 @@ export default class LeaderBoardScene extends Phaser.Scene {
   create() {
     // Create the background and panel
     this.add.image(0, 0, "bg").setOrigin(0, 0);
-    const bg = this.add
-      .rectangle(
-        0,
-        0,
-        this.cameras.main.width,
-        this.cameras.main.height,
-        0x000000,
-        0.6
-      )
-      .setOrigin(0);
-    const panel = this.add
-      .rectangle(
-        this.cameras.main.width / 2,
-        this.cameras.main.height / 2,
-        600,
-        600,
-        0x348ceb,
-        0.7
-      )
-      .setOrigin(0.5);
+    const bg = this.add.rectangle(0, 0, this.cameras.main.width, this.cameras.main.height, 0x000000, 0.6).setOrigin(0);
+    const panel = this.add.rectangle(this.cameras.main.width / 2, this.cameras.main.height / 2, 600, 600, 0x348ceb, 0.7).setOrigin(0.5);
     const title = this.add
-      .text(
-        this.cameras.main.width / 2,
-        this.cameras.main.height / 2 - 250,
-        "Leaderboard",
-        { fontSize: "32px", fill: "#fff" }
-      )
+      .text(this.cameras.main.width / 2, this.cameras.main.height / 2 - 250, "Leaderboard", { fontSize: "32px", fill: "#fff" })
       .setOrigin(0.5);
 
     this.displayHighScores();
 
     // Create a back button
-    const backButton = this.createButton(
-      this.cameras.main.width / 2,
-      this.cameras.main.height / 2 + 250,
-      "Back",
-      () => {
-        this.scene.start("main-menu-scene");
-      }
-    );
+    const backButton = this.createButton(this.cameras.main.width / 2, this.cameras.main.height / 2 + 250, "Back", () => {
+      this.scene.start("main-menu-scene");
+    });
+
+    // Add numbers for ranks
+    for (let i = 1; i < 11; i++) {
+      this.add
+        .text(this.cameras.main.width / 2 - 150, this.cameras.main.height / 2 - 240 + i * 40, i + ")", { fontSize: "24px", fill: "#fff" })
+        .setOrigin(0.5);
+    }
   }
 
   createButton(x, y, text, callback) {
-    const button = this.add
-      .image(0, 0, "blue_button_rectangle_flat")
-      .setInteractive();
+    const button = this.add.image(0, 0, "blue_button_rectangle_flat").setInteractive();
     button.setScale(1.5);
-    const buttonText = this.add
-      .text(0, 0, text, { fontSize: "32px", fill: "#fff" })
-      .setOrigin(0.5);
+    const buttonText = this.add.text(0, 0, text, { fontSize: "32px", fill: "#fff" }).setOrigin(0.5);
 
     button.on("pointerdown", callback);
 
@@ -77,18 +52,6 @@ export default class LeaderBoardScene extends Phaser.Scene {
     const buttonContainer = this.add.container(0, 0, [button, buttonText]);
     buttonContainer.setPosition(x, y);
 
-    // Add numbers for ranks
-    for (let i = 1; i < 11; i++) {
-      this.add
-        .text(
-          this.cameras.main.width / 2 - 150,
-          this.cameras.main.height / 2 - 240 + i * 40,
-          i + ")",
-          { fontSize: "24px", fill: "#fff" }
-        )
-        .setOrigin(0.5);
-    }
-
     return buttonContainer;
   }
 
@@ -103,12 +66,10 @@ export default class LeaderBoardScene extends Phaser.Scene {
     // Display high scores
     topScores.forEach((score, index) => {
       this.add
-        .text(
-          this.cameras.main.width / 2,
-          this.cameras.main.height / 2 - 200 + index * 40,
-          `${score.name}: ${score.score}`,
-          { fontSize: "24px", fill: "#fff" }
-        )
+        .text(this.cameras.main.width / 2, this.cameras.main.height / 2 - 200 + index * 40, `${score.name}: ${score.score}`, {
+          fontSize: "24px",
+          fill: "#fff",
+        })
         .setOrigin(0.5);
     });
   }

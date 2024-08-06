@@ -1,4 +1,4 @@
-//import './style.css'
+import './style.css'
 import Phaser from 'phaser'
 import PlayScene from './scenes/PlayScene'
 import LoaderScene from './scenes/LoaderScene';

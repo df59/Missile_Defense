@@ -35,14 +35,14 @@ export default class PlayScene extends Phaser.Scene {
   create() {
 
     this.score = 0;
-    this.playerHealth = 1;
-    this.funds = 100000;
+    this.playerHealth = 100;
+    this.funds = 0;
 
     this.spawns = {
-      'missile1': { spawnInterval: 2000, nextSpawnTimer: 2000, spawnRate: 1, decayRate: .9 },
-      'missile2': { spawnInterval: 2000, nextSpawnTimer: 30000, spawnRate: 1, decayRate: .995 },
-      'carePackage': { spawnInterval: 20000, nextSpawnTimer: 20000, spawnRate: 1, decayRate: .992 },
-      'healthPackage': { spawnInterval: 5000, nextSpawnTimer: 30000, spawnRate: 1, decayRate: .992 },
+      'missile1': { spawnInterval: 2000, nextSpawnTimer: 2000, spawnRate: 1, decayRate: .995 },
+      'missile2': { spawnInterval: 3000, nextSpawnTimer: 30000, spawnRate: 1, decayRate: .995 },
+      'carePackage': { spawnInterval: 20000, nextSpawnTimer: 20000, spawnRate: 1, decayRate: .993 },
+      'healthPackage': { spawnInterval: 5000, nextSpawnTimer: 30000, spawnRate: 1, decayRate: .993 },
     };
 
     this.sizes={

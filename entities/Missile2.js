@@ -8,7 +8,7 @@ export default class Missile2 extends Phaser.Physics.Arcade.Image {
         this.setTexture('missile2')
         this.speed = 100
         this.health = 5
-        this.score = 5
+        this.score = 50
         this.damage = 20
     }
 

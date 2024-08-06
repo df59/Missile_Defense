@@ -36,7 +36,7 @@ export default class PlayScene extends Phaser.Scene {
   create() {
     this.score = 0;
     this.playerHealth = 1000000;
-    this.funds = 0;
+    this.funds = 10000;
 
     this.spawns = {
       missile1: {
@@ -63,7 +63,7 @@ export default class PlayScene extends Phaser.Scene {
       missile4: {
         spawnInterval: 120000,
         minSpawnInterval: 100000,
-        nextSpawnTimer: 120,
+        nextSpawnTimer: 120000,
         spawnRate: 1,
         decayRate: 0.995,
       },

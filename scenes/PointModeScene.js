@@ -6,6 +6,8 @@ export default class PointModeScene extends Phaser.Scene {
     this.playScene;
     this.turret;
     this.targetPoint;
+    this.midWidth;
+    this.midHeight;
   }
 
   init(data) {
@@ -14,26 +16,14 @@ export default class PointModeScene extends Phaser.Scene {
   }
 
   create() {
+    this.midWidth = this.cameras.main.width / 2;
+    this.midHeight = this.cameras.main.height / 2;
     // Create a semi-transparent background
-    this.add
-      .rectangle(
-        0,
-        0,
-        this.cameras.main.width,
-        this.cameras.main.height,
-        0x000000,
-        0.6
-      )
-      .setOrigin(0);
+    this.add.rectangle(0, 0, this.cameras.main.width, this.cameras.main.height, 0x000000, 0.6).setOrigin(0);
 
     // Add instructions text
     this.add
-      .text(
-        this.cameras.main.width / 2,
-        this.cameras.main.height / 2 - 100,
-        "Click on the screen to set the turret target.",
-        { fontSize: "24px", fill: "#fff" }
-      )
+      .text(this.midWidth, this.midHeight - 100, "Click on the screen to set the turret target.", { fontSize: "24px", fill: "#fff" })
       .setOrigin(0.5);
 
     // Add input event listener to set target point

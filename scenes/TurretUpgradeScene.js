@@ -8,6 +8,8 @@ export default class TurretUpgradeScene extends Phaser.Scene {
     this.playScene;
     this.turret;
     this.buttons = new Buttons();
+    this.midWidth;
+    this.midHeight;
   }
 
   init(data) {
@@ -16,40 +18,28 @@ export default class TurretUpgradeScene extends Phaser.Scene {
   }
 
   create() {
+    this.midWidth = this.cameras.main.width / 2;
+    this.midHeight = this.cameras.main.height / 2;
     // Create the upgrade panel
     const bg = this.add.rectangle(0, 0, this.cameras.main.width, this.cameras.main.height, 0x000000, 0.6).setOrigin(0); // Make background faded
-    const panel = this.add.rectangle(this.cameras.main.width / 2, this.cameras.main.height / 2, 600, 600, 0x348ceb, 0.7).setOrigin(0.5);
+    const panel = this.add.rectangle(this.midWidth, this.midHeight, 600, 600, 0x348ceb, 0.7).setOrigin(0.5);
     const title = this.add
-      .text(this.cameras.main.width / 2, this.cameras.main.height / 2 - 260, "Turret Upgrade Store", { fontSize: "32px", fill: "#fff" })
+      .text(this.midWidth, this.midHeight - 260, "Turret Upgrade Store", { fontSize: "32px", fill: "#fff" })
       .setOrigin(0.5);
-    const header1 = this.add
-      .text(this.cameras.main.width / 2 - 180, this.cameras.main.height / 2 - 200, "Upgrade", { fontSize: "32px", fill: "#fff" })
-      .setOrigin(0.5);
-    const header2 = this.add
-      .text(this.cameras.main.width / 2, this.cameras.main.height / 2 - 200, "Cost", { fontSize: "32px", fill: "#fff" })
-      .setOrigin(0.5);
-    const header3 = this.add
-      .text(this.cameras.main.width / 2 + 180, this.cameras.main.height / 2 - 200, "Tier", { fontSize: "32px", fill: "#fff" })
-      .setOrigin(0.5);
+    const header1 = this.add.text(this.midWidth - 180, this.midHeight - 200, "Upgrade", { fontSize: "32px", fill: "#fff" }).setOrigin(0.5);
+    const header2 = this.add.text(this.midWidth, this.midHeight - 200, "Cost", { fontSize: "32px", fill: "#fff" }).setOrigin(0.5);
+    const header3 = this.add.text(this.midWidth + 180, this.midHeight - 200, "Tier", { fontSize: "32px", fill: "#fff" }).setOrigin(0.5);
 
     // Create buttons
-    const button1 = this.buttons.createUpgradeButton(
-      this,
-      this.turret,
-      this.cameras.main.width / 2,
-      this.cameras.main.height / 2 + 250,
-      "Close",
-      null,
-      () => {
-        this.scene.stop();
-        this.scene.switch("upgrade-scene");
-      }
-    );
+    const button1 = this.buttons.createUpgradeButton(this, this.turret, this.midWidth, this.midHeight + 250, "Close", null, () => {
+      this.scene.stop();
+      this.scene.switch("upgrade-scene");
+    });
     const button2 = this.buttons.createUpgradeButton(
       this,
       this.turret,
-      this.cameras.main.width / 2 - 180,
-      this.cameras.main.height / 2 - 130,
+      this.midWidth - 180,
+      this.midHeight - 130,
       "Fire Rate",
       "fire-rate",
       null
@@ -57,8 +47,8 @@ export default class TurretUpgradeScene extends Phaser.Scene {
     const button3 = this.buttons.createUpgradeButton(
       this,
       this.turret,
-      this.cameras.main.width / 2 - 180,
-      this.cameras.main.height / 2 - 60,
+      this.midWidth - 180,
+      this.midHeight - 60,
       "Bullet Speed",
       "bullet-speed",
       null
@@ -66,8 +56,8 @@ export default class TurretUpgradeScene extends Phaser.Scene {
     const button4 = this.buttons.createUpgradeButton(
       this,
       this.turret,
-      this.cameras.main.width / 2 - 180,
-      this.cameras.main.height / 2 + 10,
+      this.midWidth - 180,
+      this.midHeight + 10,
       "Bullet Damage",
       "bullet-damage",
       null
@@ -75,8 +65,8 @@ export default class TurretUpgradeScene extends Phaser.Scene {
     const button5 = this.buttons.createUpgradeButton(
       this,
       this.turret,
-      this.cameras.main.width / 2 - 100,
-      this.cameras.main.height / 2 + 80,
+      this.midWidth - 100,
+      this.midHeight + 80,
       "Point Mode",
       null,
       () => {
@@ -92,8 +82,8 @@ export default class TurretUpgradeScene extends Phaser.Scene {
     const button6 = this.buttons.createUpgradeButton(
       this,
       this.turret,
-      this.cameras.main.width / 2 + 100,
-      this.cameras.main.height / 2 + 80,
+      this.midWidth + 100,
+      this.midHeight + 80,
       "Follow Mode",
       null,
       () => {
@@ -103,13 +93,11 @@ export default class TurretUpgradeScene extends Phaser.Scene {
     );
 
     // Description textbox
-    this.descriptionText = this.add
-      .text(this.cameras.main.width / 2, this.cameras.main.height / 2 + 150, "", { fontSize: "24px", fill: "#fff" })
-      .setOrigin(0.5);
+    this.descriptionText = this.add.text(this.midWidth, this.midHeight + 150, "", { fontSize: "24px", fill: "#fff" }).setOrigin(0.5);
 
     // Funds textbox
     this.fundsText = this.add
-      .text(this.cameras.main.width / 2 - 200, this.cameras.main.height / 2 + 250, `Funds: ${this.playScene.funds}`, {
+      .text(this.midWidth - 200, this.midHeight + 250, `Funds: ${this.playScene.funds}`, {
         fontSize: "24px",
         fill: "#fff",
       })

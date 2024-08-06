@@ -20,6 +20,8 @@ export default class TutorialScene extends Phaser.Scene {
     const title = this.add.text(this.midWidth, this.midHeight - 360, "Tutorial", { fontSize: "32px", fill: "#fff" }).setOrigin(0.5);
 
     // Add images and descriptions
+
+    // Tank
     const tutorialImage1 = this.add.image(this.midWidth - 400, this.midHeight - 300, "tank");
     tutorialImage1.setScale(0.5);
     const description1 = this.add.text(this.midWidth - 250, this.midHeight - 300, "Move your tank left and right with A and D.", {
@@ -27,15 +29,20 @@ export default class TutorialScene extends Phaser.Scene {
       fill: "#fff",
     });
 
-    const tutorialImage2 = this.add.image(this.midWidth - 450, this.midHeight - 200, "missile1");
+    // Missiles
+    const tutorialImage2 = this.add.image(this.midWidth - 500, this.midHeight - 200, "missile1");
     tutorialImage2.setScale(0.7);
-    const tutorialImage3 = this.add.image(this.midWidth - 400, this.midHeight - 200, "missile2");
+    const tutorialImage3 = this.add.image(this.midWidth - 450, this.midHeight - 200, "missile2");
     tutorialImage3.setScale(0.5);
+    const tutorialImage8 = this.add.image(this.midWidth - 400, this.midHeight - 200, "missile3");
+    tutorialImage8.setScale(0.25);
+    const tutorialImage9 = this.add.image(this.midWidth - 350, this.midHeight - 200, "missile4");
+    tutorialImage9.setScale(0.6);
     const description2 = this.add.text(this.midWidth - 250, this.midHeight - 200, "Different missiles will fall from the sky.", {
       fontSize: "24px",
       fill: "#fff",
     });
-
+    // Bullet
     const tutorialImage4 = this.add.image(this.midWidth - 400, this.midHeight - 100, "bullet");
     tutorialImage4.setScale(1);
     const description3 = this.add.text(
@@ -44,7 +51,7 @@ export default class TutorialScene extends Phaser.Scene {
       "Click to shoot them down before they land and reduce your health!",
       { fontSize: "24px", fill: "#fff" }
     );
-
+    // Powerups
     const tutorialImage5 = this.add.image(this.midWidth - 470, this.midHeight, "heart");
     tutorialImage5.setScale(0.5);
     const tutorialImage6 = this.add.image(this.midWidth - 400, this.midHeight, "carePackage");
@@ -53,12 +60,14 @@ export default class TutorialScene extends Phaser.Scene {
       fontSize: "24px",
       fill: "#fff",
     });
+    // Upgrades
     const description5 = this.add.text(
       this.midWidth - 250,
       this.midHeight + 100,
       "Press Spacebar to pause and access upgrades and turrets.",
       { fontSize: "24px", fill: "#fff" }
     );
+    // Turrets
     const tutorialImage7 = this.add.image(this.midWidth - 400, this.midHeight + 200, "turret");
     tutorialImage7.setScale(1);
     const description6 = this.add.text(

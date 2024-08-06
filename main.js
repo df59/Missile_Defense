@@ -10,6 +10,11 @@ import TutorialScene from "./scenes/TutorialScene";
 import GameOverScene from "./scenes/GameOverScene";
 import LeaderBoardScene from "./scenes/LeaderBoardScene";
 
+const sizes = {
+  width: 1920,
+  height: 960,
+};
+
 const config = {
   type: Phaser.WEBGL,
   width: sizes.width,

@@ -2,6 +2,7 @@ import "../style.css";
 import Phaser from "phaser";
 import Missile1 from "../entities/Missile1";
 import Missile2 from "../entities/Missile2";
+import Missile3 from "../entities/Missile3";
 import Bullet from "../entities/Bullet";
 import UpgradeScene from "./UpgradeScene";
 import CarePackage from "../entities/CarePackage";
@@ -33,30 +34,41 @@ export default class PlayScene extends Phaser.Scene {
 
   create() {
     this.score = 0;
-    this.playerHealth = 1;
+    this.playerHealth = 1000000;
     this.funds = 0;
 
     this.spawns = {
       missile1: {
-        spawnInterval: 2000,
-        nextSpawnTimer: 2000,
+        spawnInterval: 2000, // Spawn every 2 seconds
+        minSpawnInterval: 500, // At most spawn every .5 seconds
+        nextSpawnTimer: 2000, // First spawn in 2 seconds
+        spawnRate: 1, // Spawn one at a time
+        decayRate: 0.995, // Increase the spawn rate every spawn
+      },
+      missile2: {
+        spawnInterval: 4000,
+        minSpawnInterval: 1000,
+        nextSpawnTimer: 30000,
         spawnRate: 1,
         decayRate: 0.995,
       },
-      missile2: {
-        spawnInterval: 3000,
-        nextSpawnTimer: 30000,
+      missile3: {
+        spawnInterval: 6000,
+        minSpawnInterval: 1000,
+        nextSpawnTimer: 60000,
         spawnRate: 1,
         decayRate: 0.995,
       },
       carePackage: {
         spawnInterval: 20000,
+        minSpawnInterval: 4000,
         nextSpawnTimer: 20000,
         spawnRate: 1,
         decayRate: 0.993,
       },
       healthPackage: {
         spawnInterval: 5000,
+        minSpawnInterval: 3000,
         nextSpawnTimer: 30000,
         spawnRate: 1,
         decayRate: 0.993,
@@ -78,6 +90,11 @@ export default class PlayScene extends Phaser.Scene {
     });
     this.missile2Group = this.physics.add.group({
       classType: Missile2,
+      maxSize: 100,
+      runChildUpdate: true,
+    });
+    this.missile3Group = this.physics.add.group({
+      classType: Missile3,
       maxSize: 100,
       runChildUpdate: true,
     });
@@ -117,61 +134,19 @@ export default class PlayScene extends Phaser.Scene {
     this.tank.body.setCollideWorldBounds(true);
 
     // Create collisions
-    this.physics.add.overlap(
-      this.missile1Group,
-      this.bulletGroup,
-      this.bulletMissileCollision,
-      null,
-      this
-    );
-    this.physics.add.overlap(
-      this.missile2Group,
-      this.bulletGroup,
-      this.bulletMissileCollision,
-      null,
-      this
-    );
-    this.physics.add.overlap(
-      this.carePackageGroup,
-      this.bulletGroup,
-      this.bulletCarePackageCollision,
-      null,
-      this
-    );
-    this.physics.add.overlap(
-      this.healthPackageGroup,
-      this.bulletGroup,
-      this.bulletHealthPackageCollision,
-      null,
-      this
-    );
-    this.physics.add.overlap(
-      this.carePackageGroup,
-      this.tank,
-      this.carePackageTankCollision,
-      null,
-      this
-    );
-    this.physics.add.overlap(
-      this.healthPackageGroup,
-      this.tank,
-      this.healthPackageTankCollision,
-      null,
-      this
-    );
+    this.physics.add.overlap(this.missile1Group, this.bulletGroup, this.bulletMissileCollision, null, this);
+    this.physics.add.overlap(this.missile2Group, this.bulletGroup, this.bulletMissileCollision, null, this);
+    this.physics.add.overlap(this.carePackageGroup, this.bulletGroup, this.bulletCarePackageCollision, null, this);
+    this.physics.add.overlap(this.healthPackageGroup, this.bulletGroup, this.bulletHealthPackageCollision, null, this);
+    this.physics.add.overlap(this.carePackageGroup, this.tank, this.carePackageTankCollision, null, this);
+    this.physics.add.overlap(this.healthPackageGroup, this.tank, this.healthPackageTankCollision, null, this);
 
     // Add top texts
-    this.scoreText = this.add
-      .bitmapText(this.sizes.width - 200, 20, "arcade", "Score: 0000", 24)
-      .setOrigin(0.5);
+    this.scoreText = this.add.bitmapText(this.sizes.width - 200, 20, "arcade", "Score: 0000", 24).setOrigin(0.5);
 
-    this.healthText = this.add
-      .bitmapText(this.sizes.width - 400, 20, "arcade", "Health: 100", 24)
-      .setOrigin(0.5);
+    this.healthText = this.add.bitmapText(this.sizes.width - 400, 20, "arcade", "Health: 100", 24).setOrigin(0.5);
 
-    this.fundsText = this.add
-      .bitmapText(this.sizes.width - 600, 20, "arcade", "Funds: 0", 24)
-      .setOrigin(0.5);
+    this.fundsText = this.add.bitmapText(this.sizes.width - 600, 20, "arcade", "Funds: 0", 24).setOrigin(0.5);
 
     // Add input keys
     this.input.keyboard.manager.enabled = true; // For game restarts from game over scene
@@ -240,11 +215,13 @@ export default class PlayScene extends Phaser.Scene {
   checkMissileSpawnTimer(time, delta, missileType) {
     this.spawns[missileType].nextSpawnTimer -= delta;
     if (this.spawns[missileType].nextSpawnTimer <= 0) {
+      console.log(this.spawns[missileType].spawnInterval);
       this.spawnMissiles(missileType);
-      this.spawns[missileType].spawnInterval *=
-        this.spawns[missileType].decayRate;
-      this.spawns[missileType].nextSpawnTimer =
-        this.spawns[missileType].spawnInterval;
+      this.spawns[missileType].spawnInterval = Math.max(
+        this.spawns[missileType].minSpawnInterval,
+        this.spawns[missileType].spawnInterval * this.spawns[missileType].decayRate
+      );
+      this.spawns[missileType].nextSpawnTimer = this.spawns[missileType].spawnInterval;
     }
   }
 
@@ -255,6 +232,9 @@ export default class PlayScene extends Phaser.Scene {
         break;
       case "missile2":
         this.spawnMissile2();
+        break;
+      case "missile3":
+        this.spawnMissile3();
         break;
       case "carePackage":
         this.spawnCarePackage();
@@ -282,6 +262,20 @@ export default class PlayScene extends Phaser.Scene {
   spawnMissile2() {
     for (let i = 0; i < this.spawns["missile2"].spawnRate; i++) {
       const missile2 = new Missile2(this, 300, 300);
+
+      const xPos = this.getRandomX();
+      const yPos = 0;
+      missile2.setPosition(xPos, yPos);
+      missile2.setActive(true);
+      missile2.setVisible(true);
+
+      this.missile2Group.add(missile2, true);
+    }
+  }
+
+  spawnMissile3() {
+    for (let i = 0; i < this.spawns["missile2"].spawnRate; i++) {
+      const missile2 = new Missile3(this, 300, 300);
 
       const xPos = this.getRandomX();
       const yPos = 0;

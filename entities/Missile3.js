@@ -1,15 +1,16 @@
 import Phaser from "phaser";
 
-export default class Missile2 extends Phaser.Physics.Arcade.Image {
-  // A slow, high health, high damage, medium score missile
+export default class Missile3 extends Phaser.Physics.Arcade.Image {
+  // A fast, high score, low health, low damage missile
   constructor(scene, x, y) {
     super(scene, x, y);
     this.playScene = scene;
-    this.setTexture("missile2");
-    this.speed = 100;
-    this.health = 5;
-    this.score = 50;
-    this.damage = 20;
+    this.setTexture("missile3");
+    this.speed = 500;
+    this.health = 1;
+    this.score = 100;
+    this.damage = 2;
+    this.setScale(0.5);
   }
 
   update(time, delta) {

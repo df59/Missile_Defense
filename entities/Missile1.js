@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 
 export default class Missile1 extends Phaser.Physics.Arcade.Image {
+  // The standard starting missile
   constructor(scene, x, y) {
     super(scene, x, y);
     this.playScene = scene;
